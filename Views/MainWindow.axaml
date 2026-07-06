@@ -1,10 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DAVE.UI.ViewModels"
+        xmlns:vm="using:DAVE.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
-        x:Class="DAVE.UI.Views.MainWindow"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        x:Class="DAVE.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="WRAP - Data Analysis + Validation Engine">
@@ -15,6 +15,38 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <StackPanel
+        Spacing="10">
+        <TextBlock
+            Text="WRAP  ::  D.A.V.E."
+            HorizontalAlignment="Left"
+            Padding="10 10 10 5"/>
+        <TextBlock
+            Text="Data Analysis + Verification Engine"
+            HorizontalAlignment="Left"
+            Padding="10 0 10 10"/>
+        <Border DragDrop.AllowDrop="True"
+                 Background="DarkGray"
+                 Padding="40"
+                 Margin="20 10"
+                 DragDrop.DragEnter="OnDragEnter"
+                 DragDrop.DragLeave="OnDragLeave"
+                 DragDrop.DragOver="OnDragOver"
+                 DragDrop.Drop="OnDrop">
+            <TextBlock Text="drop submissions here" HorizontalAlignment="Center" />
+        </Border>
+        <TextBlock
+            Name="TxtStatus"
+            Text="{Binding Greeting}"
+            HorizontalAlignment="Center"
+            Padding="10 0 10 10"/>
+        <Button
+            Command="{Binding AnalyseAndVerify}"
+            IsEnabled="{Binding CanDAVE}"
+            Padding="15"
+            Margin="20 10"
+            HorizontalAlignment="Center">
+            Analyse and Verify...
+        </Button>
+    </StackPanel>
 </Window>

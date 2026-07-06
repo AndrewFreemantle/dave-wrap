@@ -5,10 +5,17 @@
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <AssemblyName>DAVE</AssemblyName>
+        <RootNamespace>DAVE</RootNamespace>
+        <PackageId>DAVE</PackageId>
+        <Title>Data Analysis + Verification Engine</Title>
+        <Authors>WRAP, Rentbook Ltd, Andrew Freemantle</Authors>
+        <Copyright>WRAP, 2026</Copyright>
+        <Company>WRAP</Company>
+        <Product>Data Analysis + Verification Engine</Product>
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
@@ -22,6 +29,9 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
+        <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+        <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.9" />
     </ItemGroup>
 
     <ItemGroup>
