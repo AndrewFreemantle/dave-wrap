@@ -23,4 +23,19 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Assets\resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Assets\resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
