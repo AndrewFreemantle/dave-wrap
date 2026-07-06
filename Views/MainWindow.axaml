@@ -18,7 +18,7 @@
     <StackPanel
         Spacing="10">
         <TextBlock
-            Text="WRAP  ::  D.A.V.E."
+            Text="WRAP :: D.A.V.E."
             HorizontalAlignment="Left"
             Padding="10 10 10 5"/>
         <TextBlock
@@ -37,7 +37,7 @@
         </Border>
         <TextBlock
             Name="TxtStatus"
-            Text="{Binding Greeting}"
+            Text="{Binding Status}"
             HorizontalAlignment="Center"
             Padding="10 0 10 10"/>
         <Button

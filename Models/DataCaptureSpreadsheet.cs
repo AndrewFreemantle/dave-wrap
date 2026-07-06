@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using Avalonia.Platform.Storage;
 using ExcelDataReader;
@@ -10,50 +12,70 @@ namespace DAVE.Models;
 /// </summary>
 public class DataCaptureSpreadsheet
 {
-    private IStorageItem _file;
+    private const int CurrentYear = 2026;
 
-    public bool IsValid
+    private DateTime _submissionDate;
+    private readonly DataTable? _dataCaptureSheet;
+
+    public bool IsCurrent => _submissionDate.Year == CurrentYear;
+    public bool IsPrevious => _submissionDate.Year < CurrentYear;
+
+    public bool IsValid => _dataCaptureSheet != null;
+
+    public object GetValue(int row, int column)
     {
-        get
-        {
-            try
-            {
-                using (var stream = File.Open(_file.TryGetLocalPath(), FileMode.Open, FileAccess.Read))
-                {
-                    // Auto-detect format, supports:
-                    //  - Binary Excel files (2.0-2003 format; *.xls)
-                    //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
-                    using (var reader = ExcelReaderFactory.CreateReader(stream))
-                    {
-                        Console.WriteLine($"> Sheets: {reader.ResultsCount}");
+        if (!IsValid)
+            throw new InvalidOperationException("Invalid data capture sheet");
+        if (_dataCaptureSheet == null)
+            throw new InvalidOperationException("Data capture sheet not initialized");
 
-                        // Test 1: Company Name
-                        //  Find the sheet names 'Data capture sheet'
-                        var result = reader.AsDataSet();
+        return _dataCaptureSheet.Rows[row][column];
+    }
 
-                        var dataCaptureSheet = result.Tables["Data capture sheet"];
-                        if (dataCaptureSheet == null) return false;
-
-
-                        return dataCaptureSheet.Rows[0][0].ToString() == "Food Loss and Waste Data Capture Sheet";
-
-                        // {
-                        //     var companyName = dataCaptureSheet.Rows[7][2].ToString();
-                        //     Console.WriteLine($"> Company name?: {companyName}");
-                        // }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
-        }
+    public object GetValue(DataFieldName dataFieldName)
+    {
+        return GetValue(_dataFieldMappings[dataFieldName].Item1, _dataFieldMappings[dataFieldName].Item2);
     }
 
     public DataCaptureSpreadsheet(IStorageItem file)
     {
-        _file = file;
+        try
+        {
+            using (var stream = File.Open(file.TryGetLocalPath(), FileMode.Open, FileAccess.Read))
+            {
+                // Auto-detect format, supports:
+                //  - Binary Excel files (2.0-2003 format; *.xls)
+                //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    Console.WriteLine($@"> Sheets: {reader.ResultsCount}");
+
+                    var result = reader.AsDataSet();
+                    var dataCaptureSheet = result.Tables["Data capture sheet"];
+                    if (dataCaptureSheet?.Rows[0][0].ToString() == "Food Loss and Waste Data Capture Sheet")
+                    {
+                        _dataCaptureSheet = dataCaptureSheet;
+                        _submissionDate = DateTime.Parse(GetValue(DataFieldName.SubmissionDate).ToString());
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
+
+    private readonly Dictionary<DataFieldName, Tuple<int, int>> _dataFieldMappings = new()
+    {
+        { DataFieldName.CompanyName, new Tuple<int, int>(7, 2) },
+        { DataFieldName.SubmissionDate, new Tuple<int, int>(11, 2) }
+    };
+
+}
+
+public enum DataFieldName
+{
+    CompanyName,
+    SubmissionDate
 }

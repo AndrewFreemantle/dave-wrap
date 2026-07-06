@@ -2,22 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 using DAVE.Models;
 
 namespace DAVE.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public string Greeting { get; } = "patiently awaiting spreadsheet(s)...";
 
-    public List<DataCaptureSpreadsheet> _spreadsheets = [];
+    public string Status
+    {
+        get
+        {
+            if (HasCurrent && HasPrevious) return "Current & Previous - ready...";
+            if (HasCurrent) return "Current - ready...";
+            if (HasPrevious) return "Previous. Awaiting current...";
+            if (_filesDropped) return "still awaiting data submission file(s)...";
+            return "awaiting data submission file(s)...";
+        }
+    }
 
-    public bool CanDAVE => _spreadsheets.Count(s => s.IsValid) >= 1;
+    private bool _filesDropped = false;
+    private readonly List<DataCaptureSpreadsheet> _spreadsheets = [];
+
+    public bool HasCurrent => _spreadsheets.Any(s => s is { IsValid: true, IsCurrent: true });
+    public bool HasPrevious => _spreadsheets.Any(s => s is { IsValid: true, IsPrevious: true });
+
+    public bool CanDAVE => HasCurrent;
 
     public void AnalyseAndVerify()
     {
-        Console.WriteLine($"Button Clicked...");
+        Console.WriteLine(@"Button Clicked...");
     }
 
     /// <summary>
@@ -28,9 +42,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
-            _spreadsheets.Add(new DataCaptureSpreadsheet(file));
-            Console.WriteLine("MVVM: HandleFile - adding spreadsheet");
-            base.OnPropertyChanged(nameof(CanDAVE));
+            Console.WriteLine(@"MVVM: HandleFile - checking file");
+            _filesDropped = true;
+
+            var spreadsheet = new DataCaptureSpreadsheet(file);
+            if (spreadsheet.IsValid)
+                _spreadsheets.Add(spreadsheet);
+
+            OnPropertyChanged(nameof(Status));
+            OnPropertyChanged(nameof(CanDAVE));
         }
         catch (Exception ex)
         {

@@ -1,12 +1,8 @@
 using System;
-using System.IO;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
 using DAVE.ViewModels;
-using ExcelDataReader;
 
 namespace DAVE.Views;
 
@@ -37,7 +33,7 @@ public partial class MainWindow : Window
 
     private void OnDrop(object? sender, DragEventArgs e)
     {
-        Console.WriteLine("Files dropped...");
+        Console.WriteLine(@"Files dropped...");
 
         if (e.DataTransfer.Formats.Contains(DataFormat.File))
         {
@@ -47,11 +43,10 @@ public partial class MainWindow : Window
                 foreach (var file in files)
                 {
                     // Process each dropped file
-                    Console.WriteLine($"Dropped: {file.Name} - ");
+                    Console.WriteLine($@"Dropped: {file.Name} - ");
                     ViewModel.HandleFile(file);
                 }
             }
         }
     }
-
 }
