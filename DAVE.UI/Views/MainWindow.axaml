@@ -7,7 +7,10 @@
         x:Class="DAVE.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="WRAP - Data Analysis + Validation Engine">
+        Title="WRAP - Data Assurance + Verification Engine"
+        Width="500"
+        Height="400">
+
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -18,22 +21,25 @@
     <StackPanel
         Spacing="10">
         <TextBlock
+
             Text="WRAP :: D.A.V.E."
             HorizontalAlignment="Left"
             Padding="10 10 10 5"/>
         <TextBlock
-            Text="Data Analysis + Verification Engine"
+            Text="Data Assurance + Verification Engine"
             HorizontalAlignment="Left"
             Padding="10 0 10 10"/>
         <Border DragDrop.AllowDrop="True"
-                 Background="DarkGray"
+                 Background="#C3DD80"
                  Padding="40"
                  Margin="20 10"
                  DragDrop.DragEnter="OnDragEnter"
                  DragDrop.DragLeave="OnDragLeave"
                  DragDrop.DragOver="OnDragOver"
                  DragDrop.Drop="OnDrop">
-            <TextBlock Text="drop submissions here" HorizontalAlignment="Center" />
+            <TextBlock
+                Text="drop submissions here"
+                HorizontalAlignment="Center" />
         </Border>
         <TextBlock
             Name="TxtStatus"

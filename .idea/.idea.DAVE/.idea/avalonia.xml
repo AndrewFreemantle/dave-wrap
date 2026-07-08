@@ -4,6 +4,9 @@
     <option name="projectPerEditor">
       <map>
         <entry key="App.axaml" value="DAVE.UI.csproj" />
+        <entry key="DAVE.UI/App.axaml" value="DAVE.UI/DAVE.UI.csproj" />
+        <entry key="DAVE.UI/Views/MainWindow.axaml" value="DAVE.UI/DAVE.UI.csproj" />
+        <entry key="DAVE.UI/Views/ResultsWindow.axaml" value="DAVE.UI/DAVE.UI.csproj" />
         <entry key="Views/MainWindow.axaml" value="DAVE.UI.csproj" />
       </map>
     </option>

@@ -41,7 +41,11 @@ public class DataCaptureSpreadsheet
     {
         try
         {
-            using (var stream = File.Open(file.TryGetLocalPath(), FileMode.Open, FileAccess.Read))
+            var path = file.TryGetLocalPath();
+
+            if (path == null) return;
+
+            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 // Auto-detect format, supports:
                 //  - Binary Excel files (2.0-2003 format; *.xls)

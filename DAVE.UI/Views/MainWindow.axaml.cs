@@ -8,15 +8,18 @@ namespace DAVE.Views;
 
 public partial class MainWindow : Window
 {
-    private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    private MainWindowViewModel ViewModel => ((MainWindowViewModel)DataContext)!;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
     public MainWindow()
     {
         InitializeComponent();
     }
 
-    private void OnDragEnter(object? sender, DragEventArgs e){}
-    private void OnDragLeave(object? sender, DragEventArgs e){}
+    private void OnDragEnter(object? sender, DragEventArgs e) { }
+    private void OnDragLeave(object? sender, DragEventArgs e) { }
 
     private void OnDragOver(object? sender, DragEventArgs e)
     {

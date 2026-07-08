@@ -8,11 +8,11 @@
         <AssemblyName>DAVE</AssemblyName>
         <RootNamespace>DAVE</RootNamespace>
         <PackageId>DAVE</PackageId>
-        <Title>Data Analysis + Verification Engine</Title>
+        <Title>Data Assurance + Verification Engine</Title>
         <Authors>WRAP, Rentbook Ltd, Andrew Freemantle</Authors>
         <Copyright>WRAP, 2026</Copyright>
         <Company>WRAP</Company>
-        <Product>Data Analysis + Verification Engine</Product>
+        <Product>Data Assurance + Verification Engine</Product>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="12.0.5"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.0.1" />
         <PackageReference Include="Avalonia.Desktop" Version="12.0.5"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.5"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.5"/>
@@ -39,6 +40,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Assets\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -46,6 +51,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>resources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Assets\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 </Project>

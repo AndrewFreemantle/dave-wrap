@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform.Storage;
 using DAVE.Models;
+using DAVE.Services;
 
 namespace DAVE.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel(IResultsWindowService resultsWindowService) : ViewModelBase
 {
+    /// <summary>
+    /// Parameterless constructor for the XAML previewer / design-time DataContext.
+    /// </summary>
+    public MainWindowViewModel() : this(new ResultsWindowService()) { }
 
     public string Status
     {
@@ -22,16 +27,17 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     private bool _filesDropped = false;
-    private readonly List<DataCaptureSpreadsheet> _spreadsheets = [];
+    public DataCaptureSpreadsheet? CurrentSheet { get; private set; }
+    public DataCaptureSpreadsheet? PreviousSheet { get; private set; }
 
-    public bool HasCurrent => _spreadsheets.Any(s => s is { IsValid: true, IsCurrent: true });
-    public bool HasPrevious => _spreadsheets.Any(s => s is { IsValid: true, IsPrevious: true });
+    public bool HasCurrent => CurrentSheet is { IsValid: true };
+    public bool HasPrevious => PreviousSheet is { IsValid: true };
 
     public bool CanDAVE => HasCurrent;
 
     public void AnalyseAndVerify()
     {
-        Console.WriteLine(@"Button Clicked...");
+        resultsWindowService.ShowResults(new ResultsWindowViewModel(CurrentSheet, PreviousSheet));
     }
 
     /// <summary>
@@ -45,9 +51,12 @@ public partial class MainWindowViewModel : ViewModelBase
             Console.WriteLine(@"MVVM: HandleFile - checking file");
             _filesDropped = true;
 
-            var spreadsheet = new DataCaptureSpreadsheet(file);
-            if (spreadsheet.IsValid)
-                _spreadsheets.Add(spreadsheet);
+            var sheet = new DataCaptureSpreadsheet(file);
+            if (sheet.IsValid)
+                if (sheet.IsCurrent)
+                    CurrentSheet = sheet;
+                else if (sheet.IsPrevious)
+                    PreviousSheet = sheet;
 
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(CanDAVE));

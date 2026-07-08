@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DAVE.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DAVE.Views.ResultsWindow"
+        x:DataType="vm:ResultsWindowViewModel"
+        Title="WRAP - Data Assurance + Verification Engine - Results">
+
+    <Design.DataContext>
+        <vm:ResultsWindowViewModel/>
+    </Design.DataContext>
+
+    <StackPanel Spacing="5">
+
+        <DataGrid Margin="20"
+                  ItemsSource="{Binding Results}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="#" Binding="{Binding Number}" />
+                <DataGridTextColumn Header="✅" Binding="{Binding Pass}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                <DataGridTextColumn Header="Current" Binding="{Binding Current}" Width="*" />
+                <DataGridTextColumn Header="Previous" Binding="{Binding Previous}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button
+            Command="{Binding OnEmailPressed}"
+            IsEnabled="{Binding IsEmailEnabled}"
+            Padding="15"
+            Margin="20 10"
+            HorizontalAlignment="Center">
+            📧 Email Queries
+        </Button>
+    </StackPanel>
+</Window>
