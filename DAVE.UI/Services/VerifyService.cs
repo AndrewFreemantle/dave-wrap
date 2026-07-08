@@ -21,7 +21,7 @@ public class VerifyService : IVerifyService
 
         // 8	Company Name - is it included?	IF blank, please raise query.		Row 8: Incomplete response. Please confirm the Company Name to which the data capture sheet refers
 
-        var check1 = currentSheet.GetValue(DataFieldName.CompanyName).ToString();
+        var check1 = currentSheet.GetValue<string>(DataFieldName.CompanyName);
         if (string.IsNullOrEmpty(check1) || string.IsNullOrWhiteSpace(check1))
         {
 
@@ -29,12 +29,4 @@ public class VerifyService : IVerifyService
 
         return Task.CompletedTask;
     }
-}
-
-
-public class CheckBase(DataCaptureSpreadsheet currentSheet, DataCaptureSpreadsheet? previousSheet)
-{
-
-
-
 }

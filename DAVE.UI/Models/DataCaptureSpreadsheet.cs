@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using Avalonia.Platform.Storage;
 using ExcelDataReader;
@@ -22,19 +23,22 @@ public class DataCaptureSpreadsheet
 
     public bool IsValid => _dataCaptureSheet != null;
 
-    public object GetValue(int row, int column)
+    private CultureInfo _gbCulture = CultureInfo.GetCultureInfo("en-GB");
+    public T GetValue<T>(DataFieldName dataFieldName) where T : IParsable<T>
+    {
+        var rawValue = GetRawValue(dataFieldName).ToString();
+        return T.Parse(rawValue, _gbCulture);
+    }
+
+    private object GetRawValue(DataFieldName dataFieldName)
     {
         if (!IsValid)
             throw new InvalidOperationException("Invalid data capture sheet");
         if (_dataCaptureSheet == null)
             throw new InvalidOperationException("Data capture sheet not initialized");
 
+        var (row, column) = _dataFieldMappings[dataFieldName];
         return _dataCaptureSheet.Rows[row][column];
-    }
-
-    public object GetValue(DataFieldName dataFieldName)
-    {
-        return GetValue(_dataFieldMappings[dataFieldName].Item1, _dataFieldMappings[dataFieldName].Item2);
     }
 
     public DataCaptureSpreadsheet(IStorageItem file)
@@ -59,7 +63,7 @@ public class DataCaptureSpreadsheet
                     if (dataCaptureSheet?.Rows[0][0].ToString() == "Food Loss and Waste Data Capture Sheet")
                     {
                         _dataCaptureSheet = dataCaptureSheet;
-                        _submissionDate = DateTime.Parse(GetValue(DataFieldName.SubmissionDate).ToString());
+                        _submissionDate = GetValue<DateTime>(DataFieldName.SubmissionDate);
                     }
                 }
             }
@@ -72,8 +76,12 @@ public class DataCaptureSpreadsheet
 
     private readonly Dictionary<DataFieldName, Tuple<int, int>> _dataFieldMappings = new()
     {
-        { DataFieldName.CompanyName, new Tuple<int, int>(7, 2) },
-        { DataFieldName.SubmissionDate, new Tuple<int, int>(11, 2) }
+        { DataFieldName.CompanyName, new Tuple<int, int>(8 -1, 2) },
+        { DataFieldName.AnnualTurnover, new Tuple<int, int>(13 -1, 2) },
+        { DataFieldName.SubmissionDate, new Tuple<int, int>(12 -1, 2) },
+        { DataFieldName.InventoryPeriod, new Tuple<int, int>(17 -1, 2) },
+        { DataFieldName.InventoryPeriodStart, new Tuple<int, int>(17 -1, 2) },
+        { DataFieldName.InventoryPeriodEnd, new Tuple<int, int>(18 -1, 2) },
     };
 
 }
@@ -81,5 +89,9 @@ public class DataCaptureSpreadsheet
 public enum DataFieldName
 {
     CompanyName,
-    SubmissionDate
+    AnnualTurnover,
+    SubmissionDate,
+    InventoryPeriod,
+    InventoryPeriodStart,
+    InventoryPeriodEnd,
 }

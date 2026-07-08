@@ -21,7 +21,7 @@ public class ResultsWindowService : IResultsWindowService
         var window = new ResultsWindow { DataContext = viewModel };
 
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } owner })
-            window.Show(owner);
+            window.ShowDialog(owner);
         else
             window.Show();
     }

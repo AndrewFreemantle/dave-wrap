@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="DAVE.UI/DAVE.UI.csproj" />
+  <Project Path="DAVE.UnitTests/DAVE.UnitTests.csproj" />
 </Solution>
