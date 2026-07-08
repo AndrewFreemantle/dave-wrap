@@ -24,7 +24,7 @@ jobs:
 
     env:
       Solution_Name: DAVE.slnx
-      Project_Path: DAVE.UI.csproj
+      Project_Path: DAVE.UI/DAVE.UI.csproj
       Runtime_Identifier: win-x64
       Version_Number: v0.1.${{ github.run_number }}
 
