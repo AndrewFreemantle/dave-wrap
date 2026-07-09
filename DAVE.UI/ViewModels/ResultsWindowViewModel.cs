@@ -15,7 +15,7 @@ public partial class ResultsWindowViewModel(IVerifyService verifyService) : View
     public ObservableCollection<CheckBase> Results { get; set; } = [];
 
     public bool IsEmailEnabled => Results.Any(r => !r.Pass);
-    public void OnEmailPressed()
+    public void OnEmailClicked()
     {
         try
         {
@@ -36,18 +36,22 @@ public partial class ResultsWindowViewModel(IVerifyService verifyService) : View
         }
     }
 
-    public void OnClosePressed()
-    {
-
-    }
-
-
     public ResultsWindowViewModel() : this(new VerifyService()) { }
 
     public ResultsWindowViewModel(DataCaptureSpreadsheet currentSheet, DataCaptureSpreadsheet? previousSheet) : this()
     {
         CurrentSheet = currentSheet;
         PreviousSheet = previousSheet;
+    }
+
+    public string ResultsStats
+    {
+        get
+        {
+            return Results.Any()
+                ? $"{Results.Count(r => r.Pass)} / {Results.Count}  ({(Results.Count(r => r.Pass) / (decimal)Results.Count):P0})"
+                : "- / -  (-%)";
+        }
     }
 
     public void Verify()
@@ -62,8 +66,15 @@ public partial class ResultsWindowViewModel(IVerifyService verifyService) : View
             PreviousSheet?.GetValue<DateTime>(DataFieldName.InventoryPeriodStart),
             PreviousSheet?.GetValue<DateTime>(DataFieldName.InventoryPeriodEnd), 5,
             "Rows 17/18: The 12 month period should be continuous from your previous submission. Please ensure there is no gap in reporting or double counting by having an overlap. Please resubmit your data such that it is continuous from your last submission or advise why it is not possible to do so?"));
+        Results.Add(new CheckMatch(6, "United Kingdom",     CurrentSheet.GetValue<string>(DataFieldName.Country), PreviousSheet?.GetValue<string>(DataFieldName.Country), "United Kingdom", "Row 22: You have not selected 'United Kingdom' as the country in scope. Please provide more details/confirm this. If your data covers sites outside of the UK, for the purposes of the UK Food Waste Reduction Roadmap reporting, please submit a Data Capture sheet for UK sites only."));
+        Results.Add(new CheckIfGiven(7, "Business Sector",  CurrentSheet.GetValue<string>(DataFieldName.Sector), PreviousSheet?.GetValue<string>(DataFieldName.Sector), "Row 23: Incomplete response. Please advise on the business sector that you feel best fits your business from the drop-down list provided."));
+        Results.Add(new CheckIfGiven(8, "Lifecycle",  CurrentSheet.GetValue<string>(DataFieldName.Lifecycle), PreviousSheet?.GetValue<string>(DataFieldName.Lifecycle), "Row 24: Incomplete response. Please advise on the lifecycle stages under your control covered by your reporting e.g. direct operations (manufacturing, warehouses)."));
+        Results.Add(new CheckIfGiven(9, "Sites Total",  CurrentSheet.GetValue<string>(DataFieldName.SitesTotal), PreviousSheet?.GetValue<string>(DataFieldName.SitesTotal), "Row 26: Incomplete response. Please provide the total number of sites operated by your business in the geographical area of this report e.g. UK."));
+        Results.Add(new CheckIfGiven(10, "Sites Covered",  CurrentSheet.GetValue<string>(DataFieldName.SitesTotal), PreviousSheet?.GetValue<string>(DataFieldName.SitesTotal), "Row 27: Incomplete response. Please provide the number of sites covered by this report. This figure may differ from total number of sites if some sites have been excluded from reporting e.g. due to minimal food handling or food waste (e.g offices), out of reporting scope (e.g farms), outside organisational boundary (e.g franchise sites without operational control), not operational during reporting period (e.g. under construction, permanently closed)."));
+        Results.Add(new CheckIfGiven(11, "Sites Contributing",  CurrentSheet.GetValue<string>(DataFieldName.SitesCovered), PreviousSheet?.GetValue<string>(DataFieldName.SitesCovered), "Row 28: Incomplete response. Please provide the number of sites directly contributing data. This may differ from sites covered by report where sites are within the reporting boundary but do not contribute data due to missing data, incomplete measurement systems, data gaps, or insufficient data quality."));
 
 
         OnPropertyChanged(nameof(IsEmailEnabled));
+        OnPropertyChanged(nameof(ResultsStats));
     }
 }

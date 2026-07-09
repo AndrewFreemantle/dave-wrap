@@ -82,6 +82,12 @@ public class DataCaptureSpreadsheet
         { DataFieldName.InventoryPeriod, new Tuple<int, int>(17 -1, 2) },
         { DataFieldName.InventoryPeriodStart, new Tuple<int, int>(17 -1, 2) },
         { DataFieldName.InventoryPeriodEnd, new Tuple<int, int>(18 -1, 2) },
+        { DataFieldName.Country, new Tuple<int, int>(22 -1, 2) },
+        { DataFieldName.Sector, new Tuple<int, int>(23 -1, 2) },
+        { DataFieldName.Lifecycle, new Tuple<int, int>(24 -1, 2) },
+        { DataFieldName.SitesTotal, new Tuple<int, int>(26 -1, 2) },
+        { DataFieldName.SitesCovered, new Tuple<int, int>(27 -1, 2) },
+        { DataFieldName.SitesContributing, new Tuple<int, int>(28 -1, 2) },
     };
 
 }
@@ -94,4 +100,10 @@ public enum DataFieldName
     InventoryPeriod,
     InventoryPeriodStart,
     InventoryPeriodEnd,
+    Country,
+    Sector,
+    Lifecycle,
+    SitesTotal,
+    SitesCovered,
+    SitesContributing,
 }

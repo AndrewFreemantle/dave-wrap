@@ -32,8 +32,16 @@
         <Grid
             ColumnDefinitions="*,*"
             RowDefinitions="*">
+            <TextBlock
+                Grid.Column="0"
+                Text="{Binding ResultsStats}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="17"
+                Padding="25 0 0 0" />
             <Button
                 Grid.Column="1"
+                Click="OnCloseClicked"
                 IsCancel="True"
                 Padding="10"
                 Margin="20 10"
@@ -42,7 +50,7 @@
             </Button>
             <Button
                 Grid.Column="1"
-                Command="{Binding OnEmailPressed}"
+                Command="{Binding OnEmailClicked}"
                 IsEnabled="{Binding IsEmailEnabled}"
                 IsDefault="True"
                 Padding="10"
@@ -51,6 +59,5 @@
                 📧 Email Queries
             </Button>
         </Grid>
-
     </StackPanel>
 </Window>

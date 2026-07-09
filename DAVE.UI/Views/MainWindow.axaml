@@ -43,7 +43,7 @@
             Name="TxtStatus"
             Text="{Binding Status}"
             HorizontalAlignment="Center"
-            Padding="10 0 10 10"/>
+            Padding="10 0 10 10" />
         <Button
             Command="{Binding AnalyseAndVerify}"
             IsEnabled="{Binding CanDAVE}"

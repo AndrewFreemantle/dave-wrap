@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using DAVE.ViewModels;
 
@@ -24,5 +25,10 @@ public partial class ResultsWindow : Window
     {
         Console.WriteLine(@"Results - OnOpened()");
         ViewModel.Verify();
+    }
+
+    private void OnCloseClicked(object? sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }
