@@ -4,9 +4,9 @@ namespace DAVE.Models;
 
 public class CheckDateRange : CheckBase
 {
-    private readonly DateTime _start;
-    private readonly DateTime _end;
-    private readonly int _daysAllowed;
+    protected readonly DateTime _start;
+    protected readonly DateTime _end;
+    protected readonly int _daysAllowed;
 
     public override bool Pass
     {

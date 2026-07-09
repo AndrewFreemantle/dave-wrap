@@ -29,13 +29,28 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button
-            Command="{Binding OnEmailPressed}"
-            IsEnabled="{Binding IsEmailEnabled}"
-            Padding="15"
-            Margin="20 10"
-            HorizontalAlignment="Center">
-            📧 Email Queries
-        </Button>
+        <Grid
+            ColumnDefinitions="*,*"
+            RowDefinitions="*">
+            <Button
+                Grid.Column="1"
+                IsCancel="True"
+                Padding="10"
+                Margin="20 10"
+                HorizontalAlignment="Center">
+                Close
+            </Button>
+            <Button
+                Grid.Column="1"
+                Command="{Binding OnEmailPressed}"
+                IsEnabled="{Binding IsEmailEnabled}"
+                IsDefault="True"
+                Padding="10"
+                Margin="20 10"
+                HorizontalAlignment="Right">
+                📧 Email Queries
+            </Button>
+        </Grid>
+
     </StackPanel>
 </Window>

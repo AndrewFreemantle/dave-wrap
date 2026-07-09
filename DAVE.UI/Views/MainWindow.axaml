@@ -20,11 +20,9 @@
 
     <StackPanel
         Spacing="10">
-        <TextBlock
-
-            Text="WRAP :: D.A.V.E."
-            HorizontalAlignment="Left"
-            Padding="10 10 10 5"/>
+        <Image Source="/Assets/wrap-logo.png"
+               Height="60"
+               HorizontalAlignment="Left"/>
         <TextBlock
             Text="Data Assurance + Verification Engine"
             HorizontalAlignment="Left"
@@ -51,7 +49,8 @@
             IsEnabled="{Binding CanDAVE}"
             Padding="15"
             Margin="20 10"
-            HorizontalAlignment="Center">
+            HorizontalAlignment="Center"
+            Background="#8EAC00">
             Analyse and Verify...
         </Button>
     </StackPanel>

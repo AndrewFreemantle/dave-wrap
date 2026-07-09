@@ -38,7 +38,15 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
 
     public void AnalyseAndVerify()
     {
-        resultsWindowService.ShowResults(new ResultsWindowViewModel(CurrentSheet, PreviousSheet));
+        try
+        {
+            resultsWindowService.ShowResults(new ResultsWindowViewModel(CurrentSheet, PreviousSheet));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     /// <summary>
