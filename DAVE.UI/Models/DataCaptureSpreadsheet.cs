@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.IO;
+using System.Numerics;
 using Avalonia.Platform.Storage;
 using ExcelDataReader;
 
@@ -23,11 +25,23 @@ public class DataCaptureSpreadsheet
 
     public bool IsValid => _dataCaptureSheet != null;
 
-    private CultureInfo _gbCulture = CultureInfo.GetCultureInfo("en-GB");
+    private readonly CultureInfo _gbCulture = CultureInfo.GetCultureInfo("en-GB");
     public T GetValue<T>(DataFieldName dataFieldName) where T : IParsable<T>
     {
         var rawValue = GetRawValue(dataFieldName).ToString();
-        return T.Parse(rawValue, _gbCulture);
+        if (rawValue != null && T.TryParse(rawValue, _gbCulture, out T result))
+            return result;
+
+        if (typeof(T) == typeof(string))
+            return (T)(object)string.Empty;
+
+        // handle null numeric types - Numeric IParsable types (int, double, decimal, etc.) can all parse "0",
+        //  so return a zero instead of throwing an exception
+        if (T.TryParse("0", _gbCulture, out T fallback))
+            return fallback;
+
+        throw new FormatException(
+            $"Unable to parse '{rawValue}' as {typeof(T).Name} for field {dataFieldName}, and no fallback is defined for this type.");
     }
 
     private object GetRawValue(DataFieldName dataFieldName)
@@ -76,6 +90,9 @@ public class DataCaptureSpreadsheet
 
     private readonly Dictionary<DataFieldName, Tuple<int, int>> _dataFieldMappings = new()
     {
+        // The -1 is because rows are zero-based. Using the actual row number is easier to cross-check against the source spreadsheet
+        // Note: if we need to, we can return a different Tuple<row, column> depending on IsCurrent or IsPrevious
+        //       useful if the format/layout changes year-on-year
         { DataFieldName.CompanyName, new Tuple<int, int>(8 -1, 2) },
         { DataFieldName.AnnualTurnover, new Tuple<int, int>(13 -1, 2) },
         { DataFieldName.SubmissionDate, new Tuple<int, int>(12 -1, 2) },
@@ -88,6 +105,9 @@ public class DataCaptureSpreadsheet
         { DataFieldName.SitesTotal, new Tuple<int, int>(26 -1, 2) },
         { DataFieldName.SitesCovered, new Tuple<int, int>(27 -1, 2) },
         { DataFieldName.SitesContributing, new Tuple<int, int>(28 -1, 2) },
+        { DataFieldName.TonnesOfFoodProduced, new Tuple<int, int>(29 -1, 2) },
+        { DataFieldName.UnitsProduced, new Tuple<int, int>(30 -1, 2) },
+        { DataFieldName.HaFSTotalAnnualCovers, new Tuple<int, int>(31 -1, 2) },
     };
 
 }
@@ -106,4 +126,7 @@ public enum DataFieldName
     SitesTotal,
     SitesCovered,
     SitesContributing,
+    TonnesOfFoodProduced,
+    UnitsProduced,
+    HaFSTotalAnnualCovers
 }

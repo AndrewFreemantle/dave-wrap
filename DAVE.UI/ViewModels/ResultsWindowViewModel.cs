@@ -88,6 +88,25 @@ public partial class ResultsWindowViewModel() : ViewModelBase
             CurrentSheet.GetValue<int>(DataFieldName.SitesContributing),
             PreviousSheet?.GetValue<int>(DataFieldName.SitesContributing), "Row 28: A significant year-on-year change in sites directly contributing data has been identified. Please ensure you have provided an explanation for this change (e.g. improvements to data availability or quality, updated measurement systems, or changes in operations.)"));
 
+        Results.Add(new CheckIfGiven(16, "Tonnes of Food Produced",
+            CurrentSheet.GetValue<string>(DataFieldName.TonnesOfFoodProduced),
+            PreviousSheet?.GetValue<string>(DataFieldName.TonnesOfFoodProduced), "Row 29: Incomplete response. Please provide tonnes of food sold as intended / placed on the market. If this figure is not available, please explain why within your submission."));
+        Results.Add(new CheckNumberComparison(17, "Tonnes of Food Changed?",
+            CurrentSheet.GetValue<decimal>(DataFieldName.TonnesOfFoodProduced),
+            PreviousSheet?.GetValue<decimal>(DataFieldName.TonnesOfFoodProduced), 10,
+            "Row 29: A significant change in the tonnes of food sold as intended / placed on the market has been identified. This may have also impacted your food waste as a % of food handled (FLW%, Row 50). Please ensure you have included an explanation for this change within your submission (Row 149) (e.g. business growth or contraction, aquisitions or divestments, changes to reporting boundary etc.)."));
+        Results.Add(new CheckFoodPoMReported(18, "Food PoM Reported",
+            CurrentSheet.GetValue<decimal>(DataFieldName.TonnesOfFoodProduced),
+            CurrentSheet.GetValue<string>(DataFieldName.UnitsProduced),
+            PreviousSheet?.GetValue<decimal>(DataFieldName.TonnesOfFoodProduced),
+            PreviousSheet?.GetValue<string>(DataFieldName.UnitsProduced),
+            "Row 29-30: Food sold as intended / placed on the market must be reported in tonnes using Row 29.\nIf Row 29 is populated, please confirm that the value is in tonnes. If it is not tonnes, leave Row 29 blank and report the value and unit in Row 30 instead.\n"));
+        Results.Add(new CheckHaFSBusiness(19, "HaFS Business",
+            CurrentSheet.GetValue<string>(DataFieldName.Sector),
+            CurrentSheet.GetValue<string>(DataFieldName.HaFSTotalAnnualCovers),
+            PreviousSheet?.GetValue<string>(DataFieldName.Sector),
+            PreviousSheet?.GetValue<string>(DataFieldName.HaFSTotalAnnualCovers),
+            "Row 31: Incomplete response. As a food service and hospitality business, please provide your total annual number of covers for the reporting period."));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
