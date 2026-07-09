@@ -45,13 +45,13 @@
             HorizontalAlignment="Center"
             Padding="10 0 10 10" />
         <Button
-            Command="{Binding AnalyseAndVerify}"
+            Command="{Binding AssureAndVerify}"
             IsEnabled="{Binding CanDAVE}"
             Padding="15"
             Margin="20 10"
             HorizontalAlignment="Center"
             Background="#8EAC00">
-            Analyse and Verify...
+            Assure and Verify...
         </Button>
     </StackPanel>
 </Window>

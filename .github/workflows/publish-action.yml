@@ -1,7 +1,7 @@
-# This workflow will build, test, and package a .NET desktop application
-# and publish installable artifacts to GitHub Releases on pushes to main.
+# This workflow builds, tests and packages the .NET desktop application, publishing
+# installable artifacts to GitHub Releases on pushes to main.
 
-name: .NET Core Desktop
+name: Build, Test & Publish
 
 on:
   push:
@@ -42,8 +42,8 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-#    - name: Execute unit tests
-#      run: dotnet test
+    - name: Execute unit tests
+      run: dotnet test
 
     - name: Restore the application
       run: dotnet restore $env:Solution_Name

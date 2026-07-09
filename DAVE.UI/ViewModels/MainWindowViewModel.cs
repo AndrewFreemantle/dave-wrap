@@ -36,7 +36,7 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
 
     public bool CanDAVE => HasCurrent;
 
-    public void AnalyseAndVerify()
+    public void AssureAndVerify()
     {
         try
         {
