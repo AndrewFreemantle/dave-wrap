@@ -7,7 +7,7 @@ using DAVE.Services;
 
 namespace DAVE.ViewModels;
 
-public partial class ResultsWindowViewModel(IVerifyService verifyService) : ViewModelBase
+public partial class ResultsWindowViewModel() : ViewModelBase
 {
     private DataCaptureSpreadsheet CurrentSheet { get; }
     private DataCaptureSpreadsheet? PreviousSheet { get; }
@@ -35,8 +35,6 @@ public partial class ResultsWindowViewModel(IVerifyService verifyService) : View
             throw;
         }
     }
-
-    public ResultsWindowViewModel() : this(new VerifyService()) { }
 
     public ResultsWindowViewModel(DataCaptureSpreadsheet currentSheet, DataCaptureSpreadsheet? previousSheet) : this()
     {
@@ -72,6 +70,23 @@ public partial class ResultsWindowViewModel(IVerifyService verifyService) : View
         Results.Add(new CheckIfGiven(9, "Sites Total",  CurrentSheet.GetValue<string>(DataFieldName.SitesTotal), PreviousSheet?.GetValue<string>(DataFieldName.SitesTotal), "Row 26: Incomplete response. Please provide the total number of sites operated by your business in the geographical area of this report e.g. UK."));
         Results.Add(new CheckIfGiven(10, "Sites Covered",  CurrentSheet.GetValue<string>(DataFieldName.SitesTotal), PreviousSheet?.GetValue<string>(DataFieldName.SitesTotal), "Row 27: Incomplete response. Please provide the number of sites covered by this report. This figure may differ from total number of sites if some sites have been excluded from reporting e.g. due to minimal food handling or food waste (e.g offices), out of reporting scope (e.g farms), outside organisational boundary (e.g franchise sites without operational control), not operational during reporting period (e.g. under construction, permanently closed)."));
         Results.Add(new CheckIfGiven(11, "Sites Contributing",  CurrentSheet.GetValue<string>(DataFieldName.SitesCovered), PreviousSheet?.GetValue<string>(DataFieldName.SitesCovered), "Row 28: Incomplete response. Please provide the number of sites directly contributing data. This may differ from sites covered by report where sites are within the reporting boundary but do not contribute data due to missing data, incomplete measurement systems, data gaps, or insufficient data quality."));
+        Results.Add(new CheckGreaterOrEqual<int>(12, "Sites Covered Check",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            "Rows 26-27: Sites covered by report (Row 27) exceeds total number of sites (Row 26). Total sites must be greater than or equal to sites covered by report."));
+        Results.Add(new CheckGreaterOrEqual<int>(13, "Sites Contributing Check",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesContributing),
+            "Rows 27-28: Sites contributing data (Row 28) exceeds sites covered by report (Row 27). Sites covered by report must be greater than or equal to sites contributing data."));
+        Results.Add(new CheckSiteChange(13, "Sites Changed",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            PreviousSheet?.GetValue<int>(DataFieldName.SitesTotal), "Row 26: A noticeable year-on-year change in total number of sites has been identified. Please ensure you have provided an explanation for this change (e.g. extending the scope of reporting, acquisitions, closing of sites, errors in previous submission.)"));
+        Results.Add(new CheckSiteChange(14, "Sites Covered Changed",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            PreviousSheet?.GetValue<int>(DataFieldName.SitesCovered), "Row 27: A significant year-on-year change in sites covered by report has been identified. Please ensure you have provided an explanation for this change (e.g. extending the scope of reporting, acquisitions, closing of sites, errors in previous submission.)"));
+        Results.Add(new CheckSiteChange(15, "Sites Contributing Changed",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesContributing),
+            PreviousSheet?.GetValue<int>(DataFieldName.SitesContributing), "Row 28: A significant year-on-year change in sites directly contributing data has been identified. Please ensure you have provided an explanation for this change (e.g. improvements to data availability or quality, updated measurement systems, or changes in operations.)"));
 
 
         OnPropertyChanged(nameof(IsEmailEnabled));
