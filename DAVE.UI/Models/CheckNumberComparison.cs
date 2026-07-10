@@ -29,7 +29,9 @@ public class CheckNumberComparison : CheckBase
         }
     }
 
-    public CheckNumberComparison(int number, string name, decimal one, decimal? two, int percentageDifferenceAllowed, string queryMessage) : base(number, name, $"{one:C0}", string.Empty, queryMessage)
+    public CheckNumberComparison(int number, string name, decimal one, decimal? two, int percentageDifferenceAllowed,
+        string queryMessage, bool isCurrency = false)
+        : base(number, name, isCurrency ? $"{one:C}" : $"{one:N}", two.HasValue ? (isCurrency ? $"{two:C}" : $"{two:N}") : string.Empty, queryMessage)
     {
         _one = one;
         _two = two;

@@ -3,6 +3,8 @@
         xmlns:vm="using:DAVE.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:DAVE.Models"
+        xmlns:converters="clr-namespace:DAVE.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DAVE.Views.ResultsWindow"
         x:DataType="vm:ResultsWindowViewModel"
@@ -11,6 +13,10 @@
     <Design.DataContext>
         <vm:ResultsWindowViewModel/>
     </Design.DataContext>
+
+    <Window.Resources>
+        <converters:BoolToEmojiConverter x:Key="BoolToEmojiConverter"/>
+    </Window.Resources>
 
     <DockPanel>
         <Grid
@@ -53,7 +59,7 @@
                   BorderThickness="1" BorderBrush="Gray">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding Number}" />
-                <DataGridTextColumn Header="✅" Binding="{Binding Pass}" />
+                <DataGridTextColumn Header="✅" Binding="{Binding Pass, Converter={StaticResource BoolToEmojiConverter}}" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
                 <DataGridTextColumn Header="Current" Binding="{Binding Current}" Width="*" />
                 <DataGridTextColumn Header="Previous" Binding="{Binding Previous}" Width="*" />
