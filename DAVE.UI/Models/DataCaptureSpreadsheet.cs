@@ -108,6 +108,7 @@ public class DataCaptureSpreadsheet
         { DataFieldName.TonnesOfFoodProduced, new Tuple<int, int>(29 -1, 2) },
         { DataFieldName.UnitsProduced, new Tuple<int, int>(30 -1, 2) },
         { DataFieldName.HaFSTotalAnnualCovers, new Tuple<int, int>(31 -1, 2) },
+        { DataFieldName.PackagingWeight, new Tuple<int, int>(32 -1, 2) },
     };
 
 }
@@ -128,5 +129,6 @@ public enum DataFieldName
     SitesContributing,
     TonnesOfFoodProduced,
     UnitsProduced,
-    HaFSTotalAnnualCovers
+    HaFSTotalAnnualCovers,
+    PackagingWeight
 }

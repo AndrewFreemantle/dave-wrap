@@ -87,7 +87,6 @@ public partial class ResultsWindowViewModel() : ViewModelBase
         Results.Add(new CheckSiteChange(15, "Sites Contributing Changed",
             CurrentSheet.GetValue<int>(DataFieldName.SitesContributing),
             PreviousSheet?.GetValue<int>(DataFieldName.SitesContributing), "Row 28: A significant year-on-year change in sites directly contributing data has been identified. Please ensure you have provided an explanation for this change (e.g. improvements to data availability or quality, updated measurement systems, or changes in operations.)"));
-
         Results.Add(new CheckIfGiven(16, "Tonnes of Food Produced",
             CurrentSheet.GetValue<string>(DataFieldName.TonnesOfFoodProduced),
             PreviousSheet?.GetValue<string>(DataFieldName.TonnesOfFoodProduced), "Row 29: Incomplete response. Please provide tonnes of food sold as intended / placed on the market. If this figure is not available, please explain why within your submission."));
@@ -107,6 +106,17 @@ public partial class ResultsWindowViewModel() : ViewModelBase
             PreviousSheet?.GetValue<string>(DataFieldName.Sector),
             PreviousSheet?.GetValue<string>(DataFieldName.HaFSTotalAnnualCovers),
             "Row 31: Incomplete response. As a food service and hospitality business, please provide your total annual number of covers for the reporting period."));
+        Results.Add(new CheckIfGiven(20, "Packaging Weight",
+            CurrentSheet.GetValue<string>(DataFieldName.PackagingWeight),
+            PreviousSheet?.GetValue<string>(DataFieldName.PackagingWeight),
+            "Row 32: Incomplete response. Please indicate whether you have excluded packaging weight from the tonnage figures provided. \n\nPlease note that packaging weight should be excluded from the following tonnage values: food sold as intended (row 29), food waste destinations (rows 39-48) and other destinations (rows 59-62). \n\nIf you are able to estimate packaging weight within tonnages provided, please re-submit figures with packaging weight removed. Please advise if this estimate is based on product, business or sector knowledge?\nIf you are unable to estimate packaging weight, a 15% packaging weight assumption should be applied (WRAP industry estimate), however, more sector-specific packaging weight estimates are available.\n\nIt's also recommended that you explore ways to calculate a more robust figure excluding packaging weight (more guidance can be provided).",
+            ["N/A"]));
+        Results.Add(new CheckMatch(21, "Packaging Weight Excluded",
+            CurrentSheet.GetValue<string>(DataFieldName.PackagingWeight),
+            PreviousSheet?.GetValue<string>(DataFieldName.PackagingWeight),
+            "No",
+            "Row 32: You have identified that packaging weight has not been excluded. Please note that packaging weight should be excluded from the following tonnage values: food sold as intended (row 29), food waste destinations (rows 39-48) and other destinations (rows 59-62). \n\nIf you are able to estimate packaging weight within tonnages provided, please re-submit figures with packaging weight removed. Please advise if this estimate is based on product, business or sector knowledge?\nIf you are unable to estimate packaging weight, a 15% packaging weight assumption should be applied (WRAP industry estimate), however, more sector-specific packaging weight estimates are available.\n\nIt's also recommended that you explore ways to calculate a more robust figure excluding packaging weight (more guidance can be provided)."));
+
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
