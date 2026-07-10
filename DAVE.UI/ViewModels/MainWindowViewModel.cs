@@ -28,8 +28,8 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
     }
 
     private bool _filesDropped = false;
-    public DataCaptureSpreadsheet? CurrentSheet { get; private set; }
-    public DataCaptureSpreadsheet? PreviousSheet { get; private set; }
+    private DataCaptureSpreadsheet? CurrentSheet { get; set; }
+    private DataCaptureSpreadsheet? PreviousSheet { get; set; }
 
     public bool HasCurrent => CurrentSheet is { IsValid: true };
     public bool HasPrevious => PreviousSheet is { IsValid: true };
@@ -38,6 +38,9 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
 
     public void AssureAndVerify()
     {
+        if (CurrentSheet is null)
+            return;
+
         try
         {
             resultsWindowService.ShowResults(new ResultsWindowViewModel(CurrentSheet, PreviousSheet));

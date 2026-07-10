@@ -28,8 +28,28 @@ public class DataCaptureSpreadsheet
     private readonly CultureInfo _gbCulture = CultureInfo.GetCultureInfo("en-GB");
     public T GetValue<T>(DataFieldName dataFieldName) where T : IParsable<T>
     {
-        var rawValue = GetRawValue(dataFieldName).ToString();
-        if (rawValue != null && T.TryParse(rawValue, _gbCulture, out T result))
+        var (row, column) = _dataFieldMappings[dataFieldName];
+        return GetValue<T>(row, column);
+    }
+
+    public IEnumerable<T> GetValues<T>(List<int> rows, List<int> columns) where T : IParsable<T>
+    {
+        var values = new List<T>();
+        foreach (var column in columns)
+        {
+            foreach (var row in rows)
+            {
+                // rows and columns are zero-based
+                values.Add(GetValue<T>(row - 1, column - 1));
+            }
+        }
+        return values;
+    }
+
+    private T GetValue<T>(int row, int column) where T : IParsable<T>
+    {
+        var rawValue = GetRawValue(row, column).ToString();
+        if (rawValue != null && T.TryParse(rawValue, _gbCulture, out T? result))
             return result;
 
         if (typeof(T) == typeof(string))
@@ -37,21 +57,20 @@ public class DataCaptureSpreadsheet
 
         // handle null numeric types - Numeric IParsable types (int, double, decimal, etc.) can all parse "0",
         //  so return a zero instead of throwing an exception
-        if (T.TryParse("0", _gbCulture, out T fallback))
+        if (T.TryParse("0", _gbCulture, out T? fallback))
             return fallback;
 
         throw new FormatException(
-            $"Unable to parse '{rawValue}' as {typeof(T).Name} for field {dataFieldName}, and no fallback is defined for this type.");
+            $"Unable to parse '{rawValue}' as {typeof(T).Name} for row {row + 1}, column {column + 1}, and no fallback is defined for this type.");
     }
 
-    private object GetRawValue(DataFieldName dataFieldName)
+    private object GetRawValue(int row, int column)
     {
         if (!IsValid)
             throw new InvalidOperationException("Invalid data capture sheet");
         if (_dataCaptureSheet == null)
             throw new InvalidOperationException("Data capture sheet not initialized");
 
-        var (row, column) = _dataFieldMappings[dataFieldName];
         return _dataCaptureSheet.Rows[row][column];
     }
 
@@ -109,8 +128,12 @@ public class DataCaptureSpreadsheet
         { DataFieldName.UnitsProduced, new Tuple<int, int>(30 -1, 2) },
         { DataFieldName.HaFSTotalAnnualCovers, new Tuple<int, int>(31 -1, 2) },
         { DataFieldName.PackagingWeight, new Tuple<int, int>(32 -1, 2) },
+        { DataFieldName.SewerWastewaterTreatment, new Tuple<int, int>(44 -1, 2) },
+        { DataFieldName.TotalFLW, new Tuple<int, int>(49 -1, 2) },
+        { DataFieldName.FoodVsInediblePartsNotice, new Tuple<int, int>(55 -1, 4) },
+        { DataFieldName.RedistributionNotes, new Tuple<int, int>(52 -1, 4) },
+        { DataFieldName.BioRedistributionNotes, new Tuple<int, int>(61 -1, 4) },
     };
-
 }
 
 public enum DataFieldName
@@ -130,5 +153,10 @@ public enum DataFieldName
     TonnesOfFoodProduced,
     UnitsProduced,
     HaFSTotalAnnualCovers,
-    PackagingWeight
+    PackagingWeight,
+    SewerWastewaterTreatment,
+    TotalFLW,
+    FoodVsInediblePartsNotice,
+    RedistributionNotes,
+    BioRedistributionNotes
 }

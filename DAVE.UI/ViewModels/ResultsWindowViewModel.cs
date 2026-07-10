@@ -9,7 +9,22 @@ namespace DAVE.ViewModels;
 
 public partial class ResultsWindowViewModel() : ViewModelBase
 {
-    private DataCaptureSpreadsheet CurrentSheet { get; }
+    private const string EmailSubject = "[ACTION REQUIRED] - WRAP: FWRR Submission Queries";
+
+    private const string EmailBodyIntro = @"
+Thank you for your submission.
+
+We have done some preliminary automated checks which have raised the following queries, which we kindly ask you to review and reply with any updates or explanations.
+";
+
+    private const string EmailBodyOutro = @"
+
+Thank you in advance for your time and responses. 
+
+";
+
+
+    private DataCaptureSpreadsheet? CurrentSheet { get; }
     private DataCaptureSpreadsheet? PreviousSheet { get; }
 
     public ObservableCollection<CheckBase> Results { get; set; } = [];
@@ -19,13 +34,18 @@ public partial class ResultsWindowViewModel() : ViewModelBase
     {
         try
         {
-            var body = string.Join(
-                Environment.NewLine,
-                Results
-                    .Where(r => !r.Pass)
-                    .Select(r => r.QueryMessage));
+            var body = EmailBodyIntro;
 
-            var mailto = "mailto:?body=" + Uri.EscapeDataString(body);
+            foreach (var queryMessage in Results
+                         .Where(r => !r.Pass)
+                         .Select(r => r.QueryMessage))
+            {
+                body += $"{Environment.NewLine}\t• {queryMessage}";
+            }
+
+            body += EmailBodyOutro;
+
+            var mailto = $"mailto:?subject={Uri.EscapeDataString(EmailSubject)}&body={Uri.EscapeDataString(body)}";
 
             Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
         }
@@ -54,9 +74,15 @@ public partial class ResultsWindowViewModel() : ViewModelBase
 
     public void Verify()
     {
+        if (CurrentSheet is null)
+            return;
+
+        // ## Company Information
         Results.Add(new CheckIfGiven(1, "Company Name",     CurrentSheet.GetValue<string>(DataFieldName.CompanyName), PreviousSheet?.GetValue<string>(DataFieldName.CompanyName), "Row 8: Incomplete response. Please confirm the Company Name to which the data capture sheet refers"));
         Results.Add(new CheckIfGiven(2, "Annual Turnover",  CurrentSheet.GetValue<string>(DataFieldName.AnnualTurnover), PreviousSheet?.GetValue<string>(DataFieldName.AnnualTurnover), "Row 13: New requirement of updated form - Annual turnover missing. Please could you provide? This is required purely for categorising the size of the business and is not shared."));
-        Results.Add(new CheckNumberComparison(3, "Annual Turnover Comparable?", CurrentSheet.GetValue<decimal>(DataFieldName.AnnualTurnover), PreviousSheet?.GetValue<decimal>(DataFieldName.AnnualTurnover), 20, "Row 13: There appears to be a significant change in your turnover. Please clarify why this is the case."));
+        Results.Add(new CheckNumberComparison(3, "Annual Turnover Comparable?", CurrentSheet.GetValue<decimal>(DataFieldName.AnnualTurnover), PreviousSheet?.GetValue<decimal>(DataFieldName.AnnualTurnover), 20, "Row 13: There appears to be a significant change in your turnover. Please clarify why this is the case.", true));
+
+        // ## Scope of the FLW Inventory
         Results.Add(new CheckDateRange(4, "Inventory 12 months", CurrentSheet.GetValue<DateTime>(DataFieldName.InventoryPeriodStart), CurrentSheet.GetValue<DateTime>(DataFieldName.InventoryPeriodEnd), 5, "Rows 17/18: Inventory period must cover 12 months (one year). Please resubmit your data for a 12 month period or advise why it is not possible to do so."));
         Results.Add(new CheckDateRangeContinuous(5, "Inventory Continuous",
             CurrentSheet.GetValue<DateTime>(DataFieldName.InventoryPeriodStart),
@@ -116,6 +142,49 @@ public partial class ResultsWindowViewModel() : ViewModelBase
             PreviousSheet?.GetValue<string>(DataFieldName.PackagingWeight),
             "No",
             "Row 32: You have identified that packaging weight has not been excluded. Please note that packaging weight should be excluded from the following tonnage values: food sold as intended (row 29), food waste destinations (rows 39-48) and other destinations (rows 59-62). \n\nIf you are able to estimate packaging weight within tonnages provided, please re-submit figures with packaging weight removed. Please advise if this estimate is based on product, business or sector knowledge?\nIf you are unable to estimate packaging weight, a 15% packaging weight assumption should be applied (WRAP industry estimate), however, more sector-specific packaging weight estimates are available.\n\nIt's also recommended that you explore ways to calculate a more robust figure excluding packaging weight (more guidance can be provided)."));
+
+        // ## Data Summary
+        Results.Add(new CheckIfAllGiven(23, "FLW Data Yes/No/Unsure?",
+            CurrentSheet.GetValues<string>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48], [2]),
+            PreviousSheet?.GetValues<string>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48], [2]),
+            "Rows 39-48: One or more incomplete cells have been identified. Please complete Columns B with \"Yes\", \"No\" or \"Unsure\".",
+            ["Yes", "No", "Unsure"]));
+        Results.Add(new CheckAllNumberComparison(24, "FLW Data Changed?",
+            CurrentSheet.GetValues<decimal>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [2]),
+            PreviousSheet?.GetValues<decimal>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [2]),
+            10,
+            "Rows 39-48: A significant year-on-year change in food waste destinations or total FLW has been identified. This may have also impacted your food waste as a % of food handled (FLW%, Row 50). Please ensure you have included an explanation for this change within the submission notes (Column E or Row 149) e.g. operational changes, expanding scope, updated methodology etc)."));
+        Results.Add(new CheckNumberComparison(25, "Wastewater / Total FLW %",
+            CurrentSheet.GetValue<decimal>(DataFieldName.SewerWastewaterTreatment),
+            CurrentSheet.GetValue<decimal>(DataFieldName.TotalFLW),
+            10,
+            "Row 44: The tonnage of food waste sent to sewer / wastewater treatment has been identified as unusually high. Please review the tonnage provided and confirm the value reported is the food element (suspended solids/ sludge) contained within the wastewater and not the tonnage of wastewater treated (please include details in Column E).",
+            passIfOneIsBlankOrZero: true,
+            twoIsPrevious: false));
+        Results.Add(new CheckNotMatch(26, "Inedible = FLW",
+            CurrentSheet.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
+            PreviousSheet?.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
+            "Warning: estimate of food and inedible parts does not equal total FLW; please amend",
+            "Rows 55-56: The total estimate of food and inedible parts does not equal the total FLW value in cell C49. Please review and amend."));
+        Results.Add(new CheckIfAnyGiven(27, "Material Sent Elsewhere?",
+            CurrentSheet.GetValues<string>([59, 60, 61, 62], [2, 3, 5]),
+            PreviousSheet?.GetValues<string>([59, 60, 61, 62], [2, 3, 5]),
+            "Rows 59-62: Please complete Columns B,C and E and resubmit."));
+        Results.Add(new CheckAllNumberComparison(24, "Material Sent Elsewhere Changed?",
+            CurrentSheet.GetValues<decimal>([59, 60, 61, 62, 63], [2]),
+            PreviousSheet?.GetValues<decimal>([59, 60, 61, 62, 63], [2]),
+            10,
+            "Rows 59-63: A significant year-on-year change in food sent to other destinations and / or total food sent to other destinations (food surplus) has been identified. This may have also impacted your food surplus as a % of food handled (% in Row 63). Please ensure you have included an explanation for this change within the submission notes (Column E or Row 149) e.g. operational changes, expanding scope, updated methodology etc)."));
+        Results.Add(new CheckNotMatch(29, "Redistribution Notes",
+            CurrentSheet.GetValue<string>(DataFieldName.RedistributionNotes),
+            PreviousSheet?.GetValue<string>(DataFieldName.RedistributionNotes),
+            ["Too Good To Go", "TGTG", "third party apps", "Staff sales", "Staff shop", "in-store discount", "yellow sticker"],
+            "Row 59: The tonnage of surplus food sent to redistribution may contain food that has been sold and does not qualify as redistribution.\n\nTo note: Food that is sold at reduced price in-store (e.g. discounted 'yellow sticker' sales), through staff sales/shop, or via a food waste app such as Too Good To Go is out of scope and should be excluded. Food sold via any of these named destinations should be included in the food sold as intended / placed on the market figure (Row 29).\nIn the context of FLW prevention, only include redistributed surplus food where the food would otherwise have ended up as FLW, or would have been sent to one of the Other Destinations. This may include food redistributed by both charitable organisations (such as FareShare, Food Cycle) and commercial ones (such as Company Shop, who also operate Community Shop).\n\nPlease review your redistribution figure and ensure you have followed the guidance above correctly."));
+        Results.Add(new CheckNotMatch(30, "Bio-redistribution Notes",
+            CurrentSheet.GetValue<string>(DataFieldName.BioRedistributionNotes),
+            PreviousSheet?.GetValue<string>(DataFieldName.BioRedistributionNotes),
+            ["coffee grounds", "spent grain", "cooking oil", "oil", "biofuel", "biodiesel", "fuel pellets", "fuel logs"],
+            "Row 61: The tonnage of food surplus sent to biomaterials may be miscategorised. \n\nMaterials such as coffee grounds, spent grain, cooking oil etc, or other similar materials sent for processing into biofuels (e.g biodiesel or fuel logs/pellets) should be reported in Food Waste destinations under \"Other\" Row 46.\n\nPlease review your entry and amend if required."));
 
 
         OnPropertyChanged(nameof(IsEmailEnabled));

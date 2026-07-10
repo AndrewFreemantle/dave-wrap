@@ -36,19 +36,15 @@ public partial class MainWindow : Window
 
     private void OnDrop(object? sender, DragEventArgs e)
     {
-        Console.WriteLine(@"Files dropped...");
+        if (!e.DataTransfer.Formats.Contains(DataFormat.File)) return;
 
-        if (e.DataTransfer.Formats.Contains(DataFormat.File))
+        var files = e.DataTransfer.TryGetFiles();
+        if (files != null)
         {
-            var files = e.DataTransfer.TryGetFiles();
-            if (files != null)
+            foreach (var file in files)
             {
-                foreach (var file in files)
-                {
-                    // Process each dropped file
-                    Console.WriteLine($@"Dropped: {file.Name} - ");
-                    ViewModel.HandleFile(file);
-                }
+                // Process each dropped file
+                ViewModel.HandleFile(file);
             }
         }
     }

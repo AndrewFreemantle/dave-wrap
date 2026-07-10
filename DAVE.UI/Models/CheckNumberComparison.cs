@@ -7,11 +7,15 @@ public class CheckNumberComparison : CheckBase
     private readonly decimal _one;
     private readonly decimal? _two;
     private readonly int _percentageDifferenceAllowed;
+    private readonly bool _passIfOneIsBlankOrZero;
 
     public override bool Pass
     {
         get
         {
+            if (_passIfOneIsBlankOrZero && _one == 0)
+                return true;
+
             if (!_two.HasValue)
                 return true;    // nothing to compare against, return a Pass
 
@@ -29,10 +33,17 @@ public class CheckNumberComparison : CheckBase
         }
     }
 
-    public CheckNumberComparison(int number, string name, decimal one, decimal? two, int percentageDifferenceAllowed, string queryMessage) : base(number, name, $"{one:C0}", string.Empty, queryMessage)
+    public CheckNumberComparison(int number, string name, decimal one, decimal? two, int percentageDifferenceAllowed,
+        string queryMessage, bool isCurrency = false, bool passIfOneIsBlankOrZero = false, bool twoIsPrevious = true)
+        : base(number, name, isCurrency ? $"{one:C}" : $"{one:N}", string.Empty, queryMessage)
     {
         _one = one;
         _two = two;
         _percentageDifferenceAllowed = percentageDifferenceAllowed;
+        _passIfOneIsBlankOrZero = passIfOneIsBlankOrZero;
+
+        Previous = twoIsPrevious && two.HasValue
+            ? (isCurrency ? $"{two:C}" : $"{two:N}")
+            : string.Empty;
     }
 }
