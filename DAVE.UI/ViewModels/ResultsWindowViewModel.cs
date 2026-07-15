@@ -191,6 +191,11 @@ Thank you in advance for your time and responses.
             CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
             "Row 75: Incomplete response. You have not indicated whether your company has set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please review and confirm.\n\nIf you are not in a position to state your reduction target then please select the response that most closely reflects your organisation's current position."));
+        Results.Add(new CheckNotMatch(32, "FLW Reduction Target: Yes?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            ["No, but we are currently working on this", "No, but we plan to work on this next year", "No"],
+            "Rows 75: You have indicated that your company has not set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please provide details of the steps being taken to implement a company FLW reduction target in the Notes (Row 75, Column D)."));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
