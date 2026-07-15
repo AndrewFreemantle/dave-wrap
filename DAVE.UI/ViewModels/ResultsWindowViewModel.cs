@@ -186,6 +186,11 @@ Thank you in advance for your time and responses.
             ["coffee grounds", "spent grain", "cooking oil", "oil", "biofuel", "biodiesel", "fuel pellets", "fuel logs"],
             "Row 61: The tonnage of food surplus sent to biomaterials may be miscategorised. \n\nMaterials such as coffee grounds, spent grain, cooking oil etc, or other similar materials sent for processing into biofuels (e.g biodiesel or fuel logs/pellets) should be reported in Food Waste destinations under \"Other\" Row 46.\n\nPlease review your entry and amend if required."));
 
+        // ## Data Summary
+        Results.Add(new CheckIfGiven(31, "FLW Reduction Target?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            "Row 75: Incomplete response. You have not indicated whether your company has set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please review and confirm.\n\nIf you are not in a position to state your reduction target then please select the response that most closely reflects your organisation's current position."));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
