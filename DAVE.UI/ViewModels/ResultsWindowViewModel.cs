@@ -196,6 +196,29 @@ Thank you in advance for your time and responses.
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
             ["No, but we are currently working on this", "No, but we plan to work on this next year", "No"],
             "Rows 75: You have indicated that your company has not set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please provide details of the steps being taken to implement a company FLW reduction target in the Notes (Row 75, Column D)."));
+        Results.Add(new CheckFLWReductionTarget(33, "FLW Reduction Targets",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionBaselineYear),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetYear),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionPercentage),
+            "Rows 75-79: Incomplete response. You have indicated that you have set a FLW reduction target, but not provided details of this target.\n\nPlease ensure a baseline year, target year and % reduction target has been provided where appropriate."));
+        Results.Add(new CheckMatch(34, "FLW Target Achieved?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            "Yes, but target has been achieved",
+            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149)."));
+        Results.Add(new CheckIfGiven(35, "FLW Target Form?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            "Row 76: Drop-down option not selected. Please indicate what form your FLW reduction target takes. If you have not yet set a FLW reduction target, please select the option that best describes your progress against this."));
+        Results.Add(new CheckMatch(36, "FLW Target Year-on-Year?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            "Year on year target (no fixed baseline/target years)",
+            "Row 76: You have indicated that a year-on-year FLW reduction target has been set. Please provide an explanation on whether your organisation has considered implementing a FLW reduction target that aligns with SDG 12.3 e.g., 50% reduction by 2030 vs set baseline year, and what barriers there are to adopting this form of target (include within the Notes, Row 149).",
+            false));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));

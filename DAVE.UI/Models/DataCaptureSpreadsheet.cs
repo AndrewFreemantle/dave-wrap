@@ -134,6 +134,11 @@ public class DataCaptureSpreadsheet
         { DataFieldName.RedistributionNotes, new Tuple<int, int>(52 -1, 4) },
         { DataFieldName.BioRedistributionNotes, new Tuple<int, int>(61 -1, 4) },
         { DataFieldName.FLWReductionTarget, new  Tuple<int, int>(75 -1, 2) },
+        { DataFieldName.FLWReductionTargetForm, new  Tuple<int, int>(76 -1, 2) },
+        { DataFieldName.FLWReductionBaselineYear,  new  Tuple<int, int>(77 -1, 2) },
+        { DataFieldName.FLWReductionTargetYear,   new  Tuple<int, int>(78 -1, 2) },
+        { DataFieldName.FLWReductionPercentage,  new  Tuple<int, int>(82 -1, 2) },
+
     };
 }
 
@@ -160,5 +165,9 @@ public enum DataFieldName
     FoodVsInediblePartsNotice,
     RedistributionNotes,
     BioRedistributionNotes,
-    FLWReductionTarget
+    FLWReductionTarget,
+    FLWReductionTargetForm,
+    FLWReductionBaselineYear,
+    FLWReductionTargetYear,
+    FLWReductionPercentage
 }
