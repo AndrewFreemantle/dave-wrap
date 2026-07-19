@@ -219,6 +219,17 @@ Thank you in advance for your time and responses.
             "Year on year target (no fixed baseline/target years)",
             "Row 76: You have indicated that a year-on-year FLW reduction target has been set. Please provide an explanation on whether your organisation has considered implementing a FLW reduction target that aligns with SDG 12.3 e.g., 50% reduction by 2030 vs set baseline year, and what barriers there are to adopting this form of target (include within the Notes, Row 149).",
             false));
+        Results.Add(new CheckIfGiven(37, "FLW Progress",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionProgress),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionProgress),
+            "Row 80: Incomplete response. Please provide a description of the progress made this year in reducing your food waste. This may be quantitative e.g., 10% reduction achieved, or a more qualitative description."));
+        Results.Add(new CheckFLWReductionEfforts(38, "FLW Reduction Efforts",
+            CurrentSheet.GetValues<string>([81, 82, 83, 84], [3]),
+            CurrentSheet.GetValues<string>([81, 82, 83, 84], [4]),
+            PreviousSheet?.GetValues<string>([81, 82, 83, 84], [3]),
+            PreviousSheet?.GetValues<string>([81, 82, 83, 84], [4]),
+            "Rows 81-84: One or multiple incomplete responses. Please complete all drop down boxes and provide a supporting description, where appropriate (e.g. where action is being taken)."));
+
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
