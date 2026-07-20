@@ -13,13 +13,11 @@ namespace DAVE.Models;
 /// </summary>
 public class DataCaptureSpreadsheet
 {
-    private const int CurrentYear = 2026;
-
     private DateTime _submissionDate;
     private readonly DataTable? _dataCaptureSheet;
 
-    public bool IsCurrent => _submissionDate.Year == CurrentYear;
-    public bool IsPrevious => _submissionDate.Year < CurrentYear;
+    public bool IsCurrent => _submissionDate.Year == DateTime.Now.Year;
+    public bool IsPrevious => _submissionDate.Year < DateTime.Now.Year;
 
     public bool IsValid => _dataCaptureSheet != null;
 
