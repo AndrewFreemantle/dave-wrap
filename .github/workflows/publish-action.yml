@@ -73,7 +73,7 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release'
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v0.1.${{ github.run_number }}
-        name: DAVE v0.1.${{ github.run_number }}
+        tag_name: ${{ env.Version_Number }}
+        name: DAVE ${{ env.Version_Number }}
         generate_release_notes: true
         files: artifacts/DAVE-Release-${{ env.Version_Number }}-${{ env.Runtime_Identifier }}.zip
