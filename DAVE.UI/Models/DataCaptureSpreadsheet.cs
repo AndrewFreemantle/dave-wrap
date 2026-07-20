@@ -146,8 +146,9 @@ public class DataCaptureSpreadsheet
         { DataFieldName.FLWReductionSupplyChain, new  Tuple<int, int>(83 -1, 2) },
         { DataFieldName.FLWReductionSupplyChainNotes, new  Tuple<int, int>(83 -1, 3) },
         { DataFieldName.FLWReductionCitizens, new  Tuple<int, int>(84 -1, 2) },
-        { DataFieldName.FLWReductionCitizensNotes, new  Tuple<int, int>(84 -1, 3) },
-
+        { DataFieldName.FLWReductionCitizensNotes, new Tuple<int, int>(84 -1, 3) },
+        { DataFieldName.SitesExclusionNotes, new Tuple<int, int>(97 -1, 2) },
+        { DataFieldName.SitesExclusionReasons, new Tuple<int, int>(98 -1, 2) },
     };
 }
 
@@ -188,5 +189,6 @@ public enum DataFieldName
     FLWReductionSupplyChainNotes,
     FLWReductionCitizens,
     FLWReductionCitizensNotes,
-
+    SitesExclusionNotes,
+    SitesExclusionReasons
 }

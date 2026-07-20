@@ -230,6 +230,31 @@ Thank you in advance for your time and responses.
             PreviousSheet?.GetValues<string>([81, 82, 83, 84], [4]),
             "Rows 81-84: One or multiple incomplete responses. Please complete all drop down boxes and provide a supporting description, where appropriate (e.g. where action is being taken)."));
 
+        // ## Quantification Methods & Uncertainty
+        Results.Add(new CheckIfAllGiven(39, "Method & Frequency",
+            CurrentSheet.GetValues<string>([94, 95], [2]),
+            PreviousSheet?.GetValues<string>([94, 95], [2]),
+            "Rows 94-95: Drop down not selected for one or multiple options. WRAP is working to better understand the methods used by businesses to measure their food waste data and the frequency these data are updated. Please select an option from the drop down menu(s).",
+            [
+                "Estimates based on assumptions or proxy data (e.g. visual estimates, waste factors)",
+                "Calculations based on existing business data (e.g. purchases, sales, production data)",
+                "Direct measurement of food waste (e.g. weighing or volume)",
+                "Automated or technology-enabled measurement (e.g. systems that automatically track waste)",
+                ]));
+        Results.Add(new CheckSiteExclusions(40, "Site Exclusions",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            CurrentSheet.GetValue<string>(DataFieldName.SitesExclusionNotes),
+            PreviousSheet?.GetValue<string>(DataFieldName.SitesExclusionNotes),
+            "Row 97: Incomplete response. You have indicated that some sites have been excluded from the report but have not indicated which sites have been excluded. Please provide details of which sites have been excluded from this report.",
+            "[Text] - please list any exclusions from the inventory"));
+        Results.Add(new CheckSiteExclusions(41, "Site Exclusion Reason",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            CurrentSheet.GetValue<string>(DataFieldName.SitesExclusionReasons),
+            PreviousSheet?.GetValue<string>(DataFieldName.SitesExclusionReasons),
+            "Row 98: Incomplete response. You have indicated that some sites have been excluded from the report but have not indicated the reasons for these exclusions. Please provide details of why some sites or parts of your operations have been excluded from this report.",
+            "[Text] - please give reasons for any exclusions from the inventory"));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
