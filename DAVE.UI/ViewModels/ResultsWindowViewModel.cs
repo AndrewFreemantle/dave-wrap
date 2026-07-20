@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using DAVE.Models;
-using DAVE.Services;
 
 namespace DAVE.ViewModels;
 
@@ -186,6 +185,103 @@ Thank you in advance for your time and responses.
             ["coffee grounds", "spent grain", "cooking oil", "oil", "biofuel", "biodiesel", "fuel pellets", "fuel logs"],
             "Row 61: The tonnage of food surplus sent to biomaterials may be miscategorised. \n\nMaterials such as coffee grounds, spent grain, cooking oil etc, or other similar materials sent for processing into biofuels (e.g biodiesel or fuel logs/pellets) should be reported in Food Waste destinations under \"Other\" Row 46.\n\nPlease review your entry and amend if required."));
 
+        // ## Data Summary
+        Results.Add(new CheckIfGiven(31, "FLW Reduction Target?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            "Row 75: Incomplete response. You have not indicated whether your company has set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please review and confirm.\n\nIf you are not in a position to state your reduction target then please select the response that most closely reflects your organisation's current position."));
+        Results.Add(new CheckNotMatch(32, "FLW Reduction Target: Yes?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            ["No, but we are currently working on this", "No, but we plan to work on this next year", "No"],
+            "Rows 75: You have indicated that your company has not set a FLW reduction target.\n\nTo be fully compliant with the Roadmap every business needs to set a FW reduction target, ideally within 6-12 months of committing to the Roadmap. Best practice is to set a baseline year, a target year and % reduction target, with the target taking the form of \"50% reduction by 2030 compared with a baseline of 2021\". Please provide details of the steps being taken to implement a company FLW reduction target in the Notes (Row 75, Column D)."));
+        Results.Add(new CheckFLWReductionTarget(33, "FLW Reduction Targets",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionBaselineYear),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetYear),
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionPercentage),
+            "Rows 75-79: Incomplete response. You have indicated that you have set a FLW reduction target, but not provided details of this target.\n\nPlease ensure a baseline year, target year and % reduction target has been provided where appropriate."));
+        Results.Add(new CheckMatch(34, "FLW Target Achieved?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
+            "Yes, but target has been achieved",
+            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149)."));
+        Results.Add(new CheckIfGiven(35, "FLW Target Form?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            "Row 76: Drop-down option not selected. Please indicate what form your FLW reduction target takes. If you have not yet set a FLW reduction target, please select the option that best describes your progress against this."));
+        Results.Add(new CheckMatch(36, "FLW Target Year-on-Year?",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
+            "Year on year target (no fixed baseline/target years)",
+            "Row 76: You have indicated that a year-on-year FLW reduction target has been set. Please provide an explanation on whether your organisation has considered implementing a FLW reduction target that aligns with SDG 12.3 e.g., 50% reduction by 2030 vs set baseline year, and what barriers there are to adopting this form of target (include within the Notes, Row 149).",
+            false));
+        Results.Add(new CheckIfGiven(37, "FLW Progress",
+            CurrentSheet.GetValue<string>(DataFieldName.FLWReductionProgress),
+            PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionProgress),
+            "Row 80: Incomplete response. Please provide a description of the progress made this year in reducing your food waste. This may be quantitative e.g., 10% reduction achieved, or a more qualitative description."));
+        Results.Add(new CheckFLWReductionEfforts(38, "FLW Reduction Efforts",
+            CurrentSheet.GetValues<string>([81, 82, 83, 84], [3]),
+            CurrentSheet.GetValues<string>([81, 82, 83, 84], [4]),
+            PreviousSheet?.GetValues<string>([81, 82, 83, 84], [3]),
+            PreviousSheet?.GetValues<string>([81, 82, 83, 84], [4]),
+            "Rows 81-84: One or multiple incomplete responses. Please complete all drop down boxes and provide a supporting description, where appropriate (e.g. where action is being taken)."));
+
+        // ## Quantification Methods & Uncertainty
+        Results.Add(new CheckIfAllGiven(39, "Method & Frequency",
+            CurrentSheet.GetValues<string>([94, 95], [2]),
+            PreviousSheet?.GetValues<string>([94, 95], [2]),
+            "Rows 94-95: Drop down not selected for one or multiple options. WRAP is working to better understand the methods used by businesses to measure their food waste data and the frequency these data are updated. Please select an option from the drop down menu(s).",
+            [
+                "Estimates based on assumptions or proxy data (e.g. visual estimates, waste factors)",
+                "Calculations based on existing business data (e.g. purchases, sales, production data)",
+                "Direct measurement of food waste (e.g. weighing or volume)",
+                "Automated or technology-enabled measurement (e.g. systems that automatically track waste)",
+                ]));
+        Results.Add(new CheckSiteExclusions(40, "Site Exclusions",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            CurrentSheet.GetValue<string>(DataFieldName.SitesExclusionNotes),
+            PreviousSheet?.GetValue<string>(DataFieldName.SitesExclusionNotes),
+            "Row 97: Incomplete response. You have indicated that some sites have been excluded from the report but have not indicated which sites have been excluded. Please provide details of which sites have been excluded from this report.",
+            "[Text] - please list any exclusions from the inventory"));
+        Results.Add(new CheckSiteExclusions(41, "Site Exclusion Reason",
+            CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
+            CurrentSheet.GetValue<int>(DataFieldName.SitesTotal),
+            CurrentSheet.GetValue<string>(DataFieldName.SitesExclusionReasons),
+            PreviousSheet?.GetValue<string>(DataFieldName.SitesExclusionReasons),
+            "Row 98: Incomplete response. You have indicated that some sites have been excluded from the report but have not indicated the reasons for these exclusions. Please provide details of why some sites or parts of your operations have been excluded from this report.",
+            "[Text] - please give reasons for any exclusions from the inventory"));
+
+        // ## Assurance & Declaration
+        Results.Add(new CheckIfGiven(42, "Based on Principles?",
+            CurrentSheet.GetValue<string>(DataFieldName.ReportingPrinciples),
+            PreviousSheet?.GetValue<string>(DataFieldName.ReportingPrinciples),
+            "Row 106: Drop down menu not selected. The FLWS Principles are stated on the named tab of the Data Capture Sheet. Please review and update response."));
+        Results.Add(new CheckMatch(43, "Principles: No/Unsure?",
+            CurrentSheet.GetValue<string>(DataFieldName.ReportingPrinciples),
+            PreviousSheet?.GetValue<string>(DataFieldName.ReportingPrinciples),
+            ["No", "Unsure"],
+            "Row 106: \"No\" or \"Unsure\" selected from the drop down menu when asked if the report is based on the FLW Standard principles. The FLWS Principles of Relevance, Completeness, Consistency, Transparency and Accuracy are stated and defined on the named tab of the Data Capture Sheet.\n\nCan you please review your initial response and clarify if still unsure?",
+            false));
+
+        // ## Data Sharing with Retailers
+        Results.Add(new CheckDataSharing(44, "Data Sharing",
+            CurrentSheet.GetValues<string>([122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132], [3]),
+            CurrentSheet.GetValue<string>(DataFieldName.DataSharingApproval),
+            PreviousSheet?.GetValue<string>(DataFieldName.DataSharingApproval),
+            "Yes I give permission for the data to be shared",
+            "Yes, the appropriate permission has been sought and granted",
+            "Row 136: Incomplete. You have indicated that you give permission to be shared to selected retailers, but not have not provided the suitable data sharing permissions. Please select from the Dropdown menu."));
+
+        // ## Data Reporting
+        Results.Add(new CheckMatch(45, "Data Reporting",
+            CurrentSheet.GetValue<string>(DataFieldName.DataReporting),
+            PreviousSheet?.GetValue<string>(DataFieldName.DataReporting),
+            ["Yes", "No, but this is something we might consider", "No"],
+            "Row 144: Incomplete. Please select from the Dropdown menu"));
 
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));

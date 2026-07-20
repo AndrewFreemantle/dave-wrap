@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using DAVE.ViewModels;
 
 namespace DAVE.Views;

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlTypes;
 using System.Globalization;
 using System.IO;
-using System.Numerics;
 using Avalonia.Platform.Storage;
 using ExcelDataReader;
 
@@ -15,13 +13,11 @@ namespace DAVE.Models;
 /// </summary>
 public class DataCaptureSpreadsheet
 {
-    private const int CurrentYear = 2026;
-
     private DateTime _submissionDate;
     private readonly DataTable? _dataCaptureSheet;
 
-    public bool IsCurrent => _submissionDate.Year == CurrentYear;
-    public bool IsPrevious => _submissionDate.Year < CurrentYear;
+    public bool IsCurrent => _submissionDate.Year == DateTime.Now.Year;
+    public bool IsPrevious => _submissionDate.Year < DateTime.Now.Year;
 
     public bool IsValid => _dataCaptureSheet != null;
 
@@ -133,6 +129,25 @@ public class DataCaptureSpreadsheet
         { DataFieldName.FoodVsInediblePartsNotice, new Tuple<int, int>(55 -1, 4) },
         { DataFieldName.RedistributionNotes, new Tuple<int, int>(52 -1, 4) },
         { DataFieldName.BioRedistributionNotes, new Tuple<int, int>(61 -1, 4) },
+        { DataFieldName.FLWReductionTarget, new  Tuple<int, int>(75 -1, 2) },
+        { DataFieldName.FLWReductionTargetForm, new  Tuple<int, int>(76 -1, 2) },
+        { DataFieldName.FLWReductionBaselineYear, new  Tuple<int, int>(77 -1, 2) },
+        { DataFieldName.FLWReductionTargetYear, new  Tuple<int, int>(78 -1, 2) },
+        { DataFieldName.FLWReductionPercentage, new  Tuple<int, int>(79 -1, 2) },
+        { DataFieldName.FLWReductionProgress, new  Tuple<int, int>(80 -1, 2) },
+        { DataFieldName.FLWReductionHotspots, new  Tuple<int, int>(81 -1, 2) },
+        { DataFieldName.FLWReductionHotspotsNotes, new  Tuple<int, int>(81 -1, 3) },
+        { DataFieldName.FLWReductionOperationalAction, new  Tuple<int, int>(82 -1, 2) },
+        { DataFieldName.FLWReductionOperationalActionNotes, new  Tuple<int, int>(82 -1, 3) },
+        { DataFieldName.FLWReductionSupplyChain, new  Tuple<int, int>(83 -1, 2) },
+        { DataFieldName.FLWReductionSupplyChainNotes, new  Tuple<int, int>(83 -1, 3) },
+        { DataFieldName.FLWReductionCitizens, new  Tuple<int, int>(84 -1, 2) },
+        { DataFieldName.FLWReductionCitizensNotes, new Tuple<int, int>(84 -1, 3) },
+        { DataFieldName.SitesExclusionNotes, new Tuple<int, int>(97 -1, 2) },
+        { DataFieldName.SitesExclusionReasons, new Tuple<int, int>(98 -1, 2) },
+        { DataFieldName.ReportingPrinciples, new Tuple<int, int>(106 -1, 2) },
+        { DataFieldName.DataSharingApproval, new Tuple<int, int>(136 -1, 0) },
+        { DataFieldName.DataReporting, new Tuple<int, int>(144 -1, 2) },
     };
 }
 
@@ -158,5 +173,24 @@ public enum DataFieldName
     TotalFLW,
     FoodVsInediblePartsNotice,
     RedistributionNotes,
-    BioRedistributionNotes
+    BioRedistributionNotes,
+    FLWReductionTarget,
+    FLWReductionTargetForm,
+    FLWReductionBaselineYear,
+    FLWReductionTargetYear,
+    FLWReductionPercentage,
+    FLWReductionProgress,
+    FLWReductionHotspots,
+    FLWReductionHotspotsNotes,
+    FLWReductionOperationalAction,
+    FLWReductionOperationalActionNotes,
+    FLWReductionSupplyChain,
+    FLWReductionSupplyChainNotes,
+    FLWReductionCitizens,
+    FLWReductionCitizensNotes,
+    SitesExclusionNotes,
+    SitesExclusionReasons,
+    ReportingPrinciples,
+    DataSharingApproval,
+    DataReporting
 }

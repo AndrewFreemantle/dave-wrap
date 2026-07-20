@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Avalonia.Platform.Storage;
 using DAVE.Models;
 using DAVE.Services;
-using DAVE.Views;
 
 namespace DAVE.ViewModels;
 
@@ -19,9 +16,6 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
     {
         get
         {
-            if (HasCurrent && HasPrevious) return "Current & Previous - ready...";
-            if (HasCurrent) return "Current - ready...";
-            if (HasPrevious) return "Previous. Awaiting current...";
             if (_filesDropped) return "still awaiting data submission file(s)...";
             return "awaiting data submission file(s)...";
         }
@@ -33,6 +27,10 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
 
     public bool HasCurrent => CurrentSheet is { IsValid: true };
     public bool HasPrevious => PreviousSheet is { IsValid: true };
+    public bool HasAnySheet => HasCurrent || HasPrevious;
+
+    public string CurrentYear => CurrentSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.SubmissionDate).Year.ToString() : string.Empty;
+    public string PreviousYear => PreviousSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.SubmissionDate).Year.ToString() : string.Empty;
 
     public bool CanDAVE => HasCurrent;
 
@@ -53,6 +51,18 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
     }
 
     /// <summary>
+    /// Clears any loaded submissions, returning the view to its initial state.
+    /// </summary>
+    public void Reset()
+    {
+        CurrentSheet = null;
+        PreviousSheet = null;
+        _filesDropped = false;
+
+        NotifySheetPropertiesChanged();
+    }
+
+    /// <summary>
     /// Handles a dropped file; is it a data capture submission?
     /// </summary>
     /// <param name="file"></param>
@@ -70,13 +80,23 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
                 else if (sheet.IsPrevious)
                     PreviousSheet = sheet;
 
-            OnPropertyChanged(nameof(Status));
-            OnPropertyChanged(nameof(CanDAVE));
+            NotifySheetPropertiesChanged();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             throw;
         }
+    }
+
+    private void NotifySheetPropertiesChanged()
+    {
+        OnPropertyChanged(nameof(Status));
+        OnPropertyChanged(nameof(CanDAVE));
+        OnPropertyChanged(nameof(HasCurrent));
+        OnPropertyChanged(nameof(HasPrevious));
+        OnPropertyChanged(nameof(HasAnySheet));
+        OnPropertyChanged(nameof(CurrentYear));
+        OnPropertyChanged(nameof(PreviousYear));
     }
 }

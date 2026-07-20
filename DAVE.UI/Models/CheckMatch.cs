@@ -1,19 +1,42 @@
 using System;
+using System.Linq;
 
 namespace DAVE.Models;
 
 public class CheckMatch : CheckBase
 {
     private readonly string _current;
-    private readonly string _match;
+    private readonly string? _match;
+    private readonly string[]? _matches;
 
-    public override bool Pass => IsMatch(_current, _match);
+    private readonly bool _passIfMatch;
 
-    public CheckMatch(int number, string name, string current, string? previous, string match, string queryMessage) :
+    public override bool Pass
+    {
+        get
+        {
+            var matched = _match != null
+                ? IsMatch(_current, _match)
+                : _matches?.Any(match => IsMatch(_current, match)) ?? false;
+
+            return _passIfMatch ? matched : !matched;
+        }
+    }
+
+    public CheckMatch(int number, string name, string current, string? previous, string match, string queryMessage, bool passIfMatch = true) :
         base(number, name, current, previous, queryMessage)
     {
         _current = current;
         _match = match;
+        _passIfMatch = passIfMatch;
+    }
+
+    public CheckMatch(int number, string name, string current, string? previous, string[] matches, string queryMessage, bool passIfMatch = true) :
+        base(number, name, current, previous, queryMessage)
+    {
+        _current = current;
+        _matches = matches;
+        _passIfMatch = passIfMatch;
     }
 
     private static bool IsMatch(string value, string match) => !string.IsNullOrWhiteSpace(value) && string.Equals(value, match, StringComparison.InvariantCultureIgnoreCase);
