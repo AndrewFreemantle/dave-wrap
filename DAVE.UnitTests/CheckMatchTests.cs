@@ -19,4 +19,11 @@ public class CheckMatchTests
         var check = new CheckMatch(0, string.Empty, _someString, null, _someString, string.Empty, false);
         Assert.False(check.Pass);
     }
+
+    [Fact]
+    public void CheckMatches_ToggleFlag_MatchShouldFail()
+    {
+        var check = new CheckMatch(0, string.Empty, _someString, null, [_someString, "Some other text to match"], string.Empty, false);
+        Assert.False(check.Pass);
+    }
 }

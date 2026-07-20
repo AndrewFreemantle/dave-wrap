@@ -256,6 +256,19 @@ Thank you in advance for your time and responses.
             "Row 98: Incomplete response. You have indicated that some sites have been excluded from the report but have not indicated the reasons for these exclusions. Please provide details of why some sites or parts of your operations have been excluded from this report.",
             "[Text] - please give reasons for any exclusions from the inventory"));
 
+        // ## Assurance & Declaration
+        Results.Add(new CheckIfGiven(42, "Based on Principles?",
+            CurrentSheet.GetValue<string>(DataFieldName.ReportingPrinciples),
+            PreviousSheet?.GetValue<string>(DataFieldName.ReportingPrinciples),
+            "Row 106: Drop down menu not selected. The FLWS Principles are stated on the named tab of the Data Capture Sheet. Please review and update response."));
+        Results.Add(new CheckMatch(43, "Principles: No/Unsure?",
+            CurrentSheet.GetValue<string>(DataFieldName.ReportingPrinciples),
+            PreviousSheet?.GetValue<string>(DataFieldName.ReportingPrinciples),
+            ["No", "Unsure"],
+            "Row 106: \"No\" or \"Unsure\" selected from the drop down menu when asked if the report is based on the FLW Standard principles. The FLWS Principles of Relevance, Completeness, Consistency, Transparency and Accuracy are stated and defined on the named tab of the Data Capture Sheet.\n\nCan you please review your initial response and clarify if still unsure?",
+            false));
+
+
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
     }

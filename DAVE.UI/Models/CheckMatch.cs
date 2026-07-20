@@ -9,7 +9,7 @@ public class CheckMatch : CheckBase
     private readonly string? _match;
     private readonly string[]? _matches;
 
-    private readonly bool _passIfMatch = true;
+    private readonly bool _passIfMatch;
 
     public override bool Pass
     {
@@ -31,11 +31,12 @@ public class CheckMatch : CheckBase
         _passIfMatch = passIfMatch;
     }
 
-    public CheckMatch(int number, string name, string current, string? previous, string[] matches, string queryMessage) :
+    public CheckMatch(int number, string name, string current, string? previous, string[] matches, string queryMessage, bool passIfMatch = true) :
         base(number, name, current, previous, queryMessage)
     {
         _current = current;
         _matches = matches;
+        _passIfMatch = passIfMatch;
     }
 
     private static bool IsMatch(string value, string match) => !string.IsNullOrWhiteSpace(value) && string.Equals(value, match, StringComparison.InvariantCultureIgnoreCase);
