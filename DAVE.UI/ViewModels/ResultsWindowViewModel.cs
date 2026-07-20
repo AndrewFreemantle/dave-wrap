@@ -277,6 +277,13 @@ Thank you in advance for your time and responses.
             "Yes, the appropriate permission has been sought and granted",
             "Row 136: Incomplete. You have indicated that you give permission to be shared to selected retailers, but not have not provided the suitable data sharing permissions. Please select from the Dropdown menu."));
 
+        // ## Data Reporting
+        Results.Add(new CheckMatch(45, "Data Reporting",
+            CurrentSheet.GetValue<string>(DataFieldName.DataReporting),
+            PreviousSheet?.GetValue<string>(DataFieldName.DataReporting),
+            ["Yes", "No, but this is something we might consider", "No"],
+            "Row 144: Incomplete. Please select from the Dropdown menu"));
+
         OnPropertyChanged(nameof(IsEmailEnabled));
         OnPropertyChanged(nameof(ResultsStats));
     }

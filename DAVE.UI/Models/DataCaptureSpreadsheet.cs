@@ -151,7 +151,7 @@ public class DataCaptureSpreadsheet
         { DataFieldName.SitesExclusionReasons, new Tuple<int, int>(98 -1, 2) },
         { DataFieldName.ReportingPrinciples, new Tuple<int, int>(106 -1, 2) },
         { DataFieldName.DataSharingApproval, new Tuple<int, int>(136 -1, 0) },
-
+        { DataFieldName.DataReporting, new Tuple<int, int>(144 -1, 2) },
     };
 }
 
@@ -195,5 +195,6 @@ public enum DataFieldName
     SitesExclusionNotes,
     SitesExclusionReasons,
     ReportingPrinciples,
-    DataSharingApproval
+    DataSharingApproval,
+    DataReporting
 }
