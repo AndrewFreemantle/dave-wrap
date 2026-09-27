@@ -140,7 +140,8 @@ Thank you in advance for your time and responses.
             CurrentSheet.GetValue<string>(DataFieldName.PackagingWeight),
             PreviousSheet?.GetValue<string>(DataFieldName.PackagingWeight),
             "No",
-            "Row 32: You have identified that packaging weight has not been excluded. Please note that packaging weight should be excluded from the following tonnage values: food sold as intended (row 29), food waste destinations (rows 39-48) and other destinations (rows 59-62). \n\nIf you are able to estimate packaging weight within tonnages provided, please re-submit figures with packaging weight removed. Please advise if this estimate is based on product, business or sector knowledge?\nIf you are unable to estimate packaging weight, a 15% packaging weight assumption should be applied (WRAP industry estimate), however, more sector-specific packaging weight estimates are available.\n\nIt's also recommended that you explore ways to calculate a more robust figure excluding packaging weight (more guidance can be provided)."));
+            "Row 32: You have identified that packaging weight has not been excluded. Please note that packaging weight should be excluded from the following tonnage values: food sold as intended (row 29), food waste destinations (rows 39-48) and other destinations (rows 59-62). \n\nIf you are able to estimate packaging weight within tonnages provided, please re-submit figures with packaging weight removed. Please advise if this estimate is based on product, business or sector knowledge?\nIf you are unable to estimate packaging weight, a 15% packaging weight assumption should be applied (WRAP industry estimate), however, more sector-specific packaging weight estimates are available.\n\nIt's also recommended that you explore ways to calculate a more robust figure excluding packaging weight (more guidance can be provided).",
+            false));
 
         // ## Data Summary
         Results.Add(new CheckIfAllGiven(23, "FLW Data Yes/No/Unsure?",
@@ -153,13 +154,10 @@ Thank you in advance for your time and responses.
             PreviousSheet?.GetValues<decimal>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [2]),
             10,
             "Rows 39-48: A significant year-on-year change in food waste destinations or total FLW has been identified. This may have also impacted your food waste as a % of food handled (FLW%, Row 50). Please ensure you have included an explanation for this change within the submission notes (Column E or Row 149) e.g. operational changes, expanding scope, updated methodology etc)."));
-        Results.Add(new CheckNumberComparison(25, "Wastewater / Total FLW %",
+        Results.Add(new CheckGreaterOrEqual<decimal>(25, "Wastewater / Total FLW %",
+            0.10m * CurrentSheet.GetValue<decimal>(DataFieldName.TotalFLW),
             CurrentSheet.GetValue<decimal>(DataFieldName.SewerWastewaterTreatment),
-            CurrentSheet.GetValue<decimal>(DataFieldName.TotalFLW),
-            10,
-            "Row 44: The tonnage of food waste sent to sewer / wastewater treatment has been identified as unusually high. Please review the tonnage provided and confirm the value reported is the food element (suspended solids/ sludge) contained within the wastewater and not the tonnage of wastewater treated (please include details in Column E).",
-            passIfOneIsBlankOrZero: true,
-            twoIsPrevious: false));
+            "Row 44: The tonnage of food waste sent to sewer / wastewater treatment has been identified as unusually high. Please review the tonnage provided and confirm the value reported is the food element (suspended solids/ sludge) contained within the wastewater and not the tonnage of wastewater treated (please include details in Column E)."));
         Results.Add(new CheckNotMatch(26, "Inedible = FLW",
             CurrentSheet.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
             PreviousSheet?.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
@@ -207,7 +205,8 @@ Thank you in advance for your time and responses.
             CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
             "Yes, but target has been achieved",
-            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149)."));
+            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149).",
+            false));
         Results.Add(new CheckIfGiven(35, "FLW Target Form?",
             CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
