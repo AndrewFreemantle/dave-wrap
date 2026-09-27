@@ -208,7 +208,8 @@ Thank you in advance for your time and responses.
             CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTarget),
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTarget),
             "Yes, but target has been achieved",
-            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149)."));
+            "Row 75: You have indicated that you have set a FLW reduction target, but that this target has been achieved. Please provide details on whether your organisation has considered revising the original target e.g., increasing the % reduction target, or setting an alternative target to focus on other areas of FLW e.g., redistribution or animal feed (include within the Notes, Row 149).",
+            false));
         Results.Add(new CheckIfGiven(35, "FLW Target Form?",
             CurrentSheet.GetValue<string>(DataFieldName.FLWReductionTargetForm),
             PreviousSheet?.GetValue<string>(DataFieldName.FLWReductionTargetForm),
