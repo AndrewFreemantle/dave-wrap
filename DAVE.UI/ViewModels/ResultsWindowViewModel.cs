@@ -154,13 +154,10 @@ Thank you in advance for your time and responses.
             PreviousSheet?.GetValues<decimal>([39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], [2]),
             10,
             "Rows 39-48: A significant year-on-year change in food waste destinations or total FLW has been identified. This may have also impacted your food waste as a % of food handled (FLW%, Row 50). Please ensure you have included an explanation for this change within the submission notes (Column E or Row 149) e.g. operational changes, expanding scope, updated methodology etc)."));
-        Results.Add(new CheckNumberComparison(25, "Wastewater / Total FLW %",
+        Results.Add(new CheckGreaterOrEqual<decimal>(25, "Wastewater / Total FLW %",
+            0.10m * CurrentSheet.GetValue<decimal>(DataFieldName.TotalFLW),
             CurrentSheet.GetValue<decimal>(DataFieldName.SewerWastewaterTreatment),
-            CurrentSheet.GetValue<decimal>(DataFieldName.TotalFLW),
-            10,
-            "Row 44: The tonnage of food waste sent to sewer / wastewater treatment has been identified as unusually high. Please review the tonnage provided and confirm the value reported is the food element (suspended solids/ sludge) contained within the wastewater and not the tonnage of wastewater treated (please include details in Column E).",
-            passIfOneIsBlankOrZero: true,
-            twoIsPrevious: false));
+            "Row 44: The tonnage of food waste sent to sewer / wastewater treatment has been identified as unusually high. Please review the tonnage provided and confirm the value reported is the food element (suspended solids/ sludge) contained within the wastewater and not the tonnage of wastewater treated (please include details in Column E)."));
         Results.Add(new CheckNotMatch(26, "Inedible = FLW",
             CurrentSheet.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
             PreviousSheet?.GetValue<string>(DataFieldName.FoodVsInediblePartsNotice),
