@@ -11,8 +11,9 @@ public class CheckDataSharing : CheckBase
     private readonly string _permissionGiven;
     private readonly string _approvalGranted;
 
-    public override bool Pass => _permissions.Any(p => string.Equals(p.Trim(), _permissionGiven, StringComparison.InvariantCultureIgnoreCase))
-                                 && string.Equals(_currentApproval.Trim(), _approvalGranted, StringComparison.InvariantCultureIgnoreCase);
+    // Approval is only owed by signatories who offered to share. Everyone else passes.
+    public override bool Pass => !_permissions.Any(p => string.Equals(p.Trim(), _permissionGiven, StringComparison.InvariantCultureIgnoreCase))
+                                 || string.Equals(_currentApproval.Trim(), _approvalGranted, StringComparison.InvariantCultureIgnoreCase);
 
     public CheckDataSharing(int number, string name, IEnumerable<string> permissions, string currentApproval, string? previousApproval, string permissionGiven, string approvalGranted, string queryMessage)
         : base(number, name, approvalGranted, previousApproval, queryMessage)
