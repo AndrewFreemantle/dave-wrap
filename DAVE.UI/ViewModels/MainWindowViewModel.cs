@@ -29,8 +29,8 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
     public bool HasPrevious => PreviousSheet is { IsValid: true };
     public bool HasAnySheet => HasCurrent || HasPrevious;
 
-    public string CurrentYear => CurrentSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.SubmissionDate).Year.ToString() : string.Empty;
-    public string PreviousYear => PreviousSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.SubmissionDate).Year.ToString() : string.Empty;
+    public string CurrentYear => CurrentSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.InventoryPeriod).Year.ToString() : string.Empty;
+    public string PreviousYear => PreviousSheet is { IsValid: true } sheet ? sheet.GetValue<DateTime>(DataFieldName.InventoryPeriod).Year.ToString() : string.Empty;
 
     public bool CanDAVE => HasCurrent;
 
