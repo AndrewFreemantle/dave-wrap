@@ -230,14 +230,15 @@ Thank you in advance for your time and responses.
 
         // ## Quantification Methods & Uncertainty
         Results.Add(new CheckIfAllGiven(39, "Method & Frequency",
-            CurrentSheet.GetValues<string>([94, 95], [2]),
-            PreviousSheet?.GetValues<string>([94, 95], [2]),
+            CurrentSheet.GetValues<string>([94, 95], [3]),
+            PreviousSheet?.GetValues<string>([94, 95], [3]),
             "Rows 94-95: Drop down not selected for one or multiple options. WRAP is working to better understand the methods used by businesses to measure their food waste data and the frequency these data are updated. Please select an option from the drop down menu(s).",
             [
                 "Estimates based on assumptions or proxy data (e.g. visual estimates, waste factors)",
                 "Calculations based on existing business data (e.g. purchases, sales, production data)",
                 "Direct measurement of food waste (e.g. weighing or volume)",
                 "Automated or technology-enabled measurement (e.g. systems that automatically track waste)",
+                "Annually", "Quarterly", "Monthly", "Weekly", "Daily", "Hourly", "Continuously / in real time"
                 ]));
         Results.Add(new CheckSiteExclusions(40, "Site Exclusions",
             CurrentSheet.GetValue<int>(DataFieldName.SitesCovered),
