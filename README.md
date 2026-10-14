@@ -27,8 +27,10 @@ DAVE is distributed as a self-contained Windows executable — there are no pre-
 
 | Project | Description |
 |---|---|
-| `DAVE.UI` | The Avalonia desktop application (views, view models, models, services) |
-| `DAVE.UnitTests` | xUnit test suite covering the validation checks |
+| `DAVE.Core` | The validation checks, `CheckSet` (the checks DAVE runs, in order) and the Data Capture Spreadsheet reader |
+| `DAVE.UI` | The Avalonia desktop application (views, view models, services) |
+| `DAVE.Cli` | `dave-cli`, which runs the same checks headless and prints the results as JSON |
+| `DAVE.UnitTests` | xUnit test suite covering the validation checks, the check order and the CLI report |
 
 ### Build
 Building from source requires the [.NET 10 SDK](https://dotnet.microsoft.com/download).
@@ -49,10 +51,20 @@ dotnet test
 dotnet run --project DAVE.UI/DAVE.UI.csproj
 ```
 
+### Command line
+
+`dave-cli` runs the same 45 checks as the desktop app, against a current submission and optionally the previous year's, and prints one JSON report to stdout (diagnostics go to stderr):
+
+```bash
+dotnet run --project DAVE.Cli/DAVE.Cli.csproj -- check current.xlsx --previous previous.xlsx --json
+```
+
+Each entry in `checks` carries the check's registration `index`, the `number` and `name` the results grid shows, whether it `passed`, the query `message` the email would include (empty when passed), and the grid's `current` and previous-year (`expected`) columns. Exit codes: `0` the checks ran, whatever the results; `2` a file could not be opened or is not a Data Capture Sheet; `1` anything else.
+
 ## CI/CD
 Continuous Integration / Continuous Development. Changes to the `main` branch are automatically built, tested and [released](https://github.com/AndrewFreemantle/dave-wrap/releases/latest).
 
 | Workflow | File | Trigger | Purpose |
 |---|---|---|---|
 | Unit Tests | [`unit-tests-action.yml`](.github/workflows/unit-tests-action.yml) | Push/PR to `main` | Runs the xUnit suite and publishes a detailed pass/fail report |
-| Build, Test & Publish | [`publish-action.yml`](.github/workflows/publish-action.yml) | Push/PR to `main` | Builds and tests the app, then (on push to `main`) releases it to [GitHub Releases](https://github.com/AndrewFreemantle/dave-wrap/releases) as a self-contained Windows (`win-x64`) executable |
+| Build, Test & Publish | [`publish-action.yml`](.github/workflows/publish-action.yml) | Push/PR to `main` | Builds and tests the app, then (on push to `main`) releases it to [GitHub Releases](https://github.com/AndrewFreemantle/dave-wrap/releases) as a self-contained Windows (`win-x64`) executable, alongside self-contained `dave-cli` executables for `win-x64`, `osx-arm64` and `linux-x64` |
