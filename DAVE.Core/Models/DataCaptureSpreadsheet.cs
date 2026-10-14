@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using Avalonia.Platform.Storage;
 using ExcelDataReader;
 
 namespace DAVE.Models;
@@ -70,12 +69,10 @@ public class DataCaptureSpreadsheet
         return _dataCaptureSheet.Rows[row][column];
     }
 
-    public DataCaptureSpreadsheet(IStorageItem file)
+    public DataCaptureSpreadsheet(string? path)
     {
         try
         {
-            var path = file.TryGetLocalPath();
-
             if (path == null) return;
 
             using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
@@ -88,12 +85,9 @@ public class DataCaptureSpreadsheet
                     Console.WriteLine($@"> Sheets: {reader.ResultsCount}");
 
                     var result = reader.AsDataSet();
-                    var dataCaptureSheet = result.Tables["Data capture sheet"];
-                    if (dataCaptureSheet?.Rows[0][0].ToString() == "Food Loss and Waste Data Capture Sheet")
-                    {
-                        _dataCaptureSheet = dataCaptureSheet;
+                    _dataCaptureSheet = FindDataCaptureSheet(result);
+                    if (_dataCaptureSheet != null)
                         _submissionDate = GetValue<DateTime>(DataFieldName.SubmissionDate);
-                    }
                 }
             }
         }
@@ -101,6 +95,31 @@ public class DataCaptureSpreadsheet
         {
             Console.WriteLine(ex);
         }
+    }
+
+    /// <summary>
+    /// Creates a submission from a workbook that has already been read, e.g. one built in memory
+    /// </summary>
+    public DataCaptureSpreadsheet(DataSet workbook)
+    {
+        try
+        {
+            _dataCaptureSheet = FindDataCaptureSheet(workbook);
+            if (_dataCaptureSheet != null)
+                _submissionDate = GetValue<DateTime>(DataFieldName.SubmissionDate);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private static DataTable? FindDataCaptureSheet(DataSet workbook)
+    {
+        var dataCaptureSheet = workbook.Tables["Data capture sheet"];
+        return dataCaptureSheet?.Rows[0][0].ToString() == "Food Loss and Waste Data Capture Sheet"
+            ? dataCaptureSheet
+            : null;
     }
 
     private readonly Dictionary<DataFieldName, Tuple<int, int>> _dataFieldMappings = new()

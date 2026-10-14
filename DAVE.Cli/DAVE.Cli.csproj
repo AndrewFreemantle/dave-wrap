@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <AssemblyName>dave-cli</AssemblyName>
+        <RootNamespace>DAVE.Cli</RootNamespace>
+        <Title>Data Assurance + Verification Engine - Command Line</Title>
+        <Authors>WRAP, Rentbook Ltd, Andrew Freemantle</Authors>
+        <Copyright>WRAP, 2026</Copyright>
+        <Company>WRAP</Company>
+        <Product>Data Assurance + Verification Engine</Product>
+        <!-- git_sha is reported separately, so keep the informational version to the release number -->
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DAVE.Core\DAVE.Core.csproj" />
+    </ItemGroup>
+
+    <!-- Embeds the short commit the CLI is built from (override with -p:GitSha=...); reported as "unknown" when git is unavailable -->
+    <Target Name="EmbedGitSha" BeforeTargets="GetAssemblyAttributes">
+        <Exec Condition="'$(GitSha)' == ''"
+              Command="git rev-parse --short HEAD"
+              WorkingDirectory="$(MSBuildProjectDirectory)"
+              ConsoleToMSBuild="true"
+              IgnoreExitCode="true"
+              IgnoreStandardErrorWarningFormat="true"
+              EchoOff="true"
+              StandardOutputImportance="low"
+              StandardErrorImportance="low">
+            <Output TaskParameter="ConsoleOutput" PropertyName="_GitShaOutput" />
+            <Output TaskParameter="ExitCode" PropertyName="_GitShaExitCode" />
+        </Exec>
+        <PropertyGroup>
+            <GitSha Condition="'$(GitSha)' == '' And '$(_GitShaExitCode)' == '0'">$(_GitShaOutput.Trim())</GitSha>
+        </PropertyGroup>
+        <ItemGroup>
+            <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+                <_Parameter1>GitSha</_Parameter1>
+                <_Parameter2>$(GitSha)</_Parameter2>
+            </AssemblyAttribute>
+        </ItemGroup>
+    </Target>
+</Project>

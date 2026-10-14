@@ -1,5 +1,6 @@
-# This workflow builds, tests and packages the .NET desktop application, publishing
-# installable artifacts to GitHub Releases on pushes to main.
+# This workflow builds, tests and packages the .NET desktop application and the
+# dave-cli command line tool, publishing installable artifacts to GitHub Releases
+# on pushes to main.
 
 name: Build, Test & Publish
 
@@ -77,3 +78,81 @@ jobs:
         name: DAVE ${{ env.Version_Number }}
         generate_release_notes: true
         files: artifacts/DAVE-Release-${{ env.Version_Number }}-${{ env.Runtime_Identifier }}.zip
+
+  cli:
+
+    # runs after the desktop build so its tests have passed and the release exists to add to
+    needs: build
+
+    strategy:
+      matrix:
+        configuration: [Release]
+        runtime_identifier: [win-x64, osx-arm64, linux-x64]
+        include:
+          - runtime_identifier: win-x64
+            os: windows-latest
+          - runtime_identifier: osx-arm64
+            os: macos-latest
+          - runtime_identifier: linux-x64
+            os: ubuntu-latest
+
+    # each runtime is published on its own OS, so the macOS binary is signed as Apple Silicon requires
+    runs-on: ${{ matrix.os }}
+
+    permissions:
+      contents: write
+
+    env:
+      Project_Path: DAVE.Cli/DAVE.Cli.csproj
+      Runtime_Identifier: ${{ matrix.runtime_identifier }}
+      Version: 1.0.${{ github.run_number }}
+      Version_Number: v1.0.${{ github.run_number }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Publish the CLI
+      shell: bash
+      run: dotnet publish "$Project_Path" -c "$Configuration" -r "$Runtime_Identifier" --self-contained true -p:PublishSingleFile=true -p:Version="$Version" -o "$Publish_Dir"
+      env:
+        Configuration: ${{ matrix.configuration }}
+        Publish_Dir: artifacts/cli
+
+    - name: Package the CLI (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $archiveName = "dave-cli-${{ matrix.configuration }}-$env:Version_Number-$env:Runtime_Identifier.zip"
+        Compress-Archive -Path "artifacts/cli/dave-cli.exe" -DestinationPath (Join-Path "artifacts" $archiveName)
+        "Archive_Name=$archiveName" >> $env:GITHUB_ENV
+
+    - name: Package the CLI (macOS, Linux)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        # tar keeps the executable bit
+        archiveName="dave-cli-${{ matrix.configuration }}-$Version_Number-$Runtime_Identifier.tar.gz"
+        tar -czf "artifacts/$archiveName" -C artifacts/cli dave-cli
+        echo "Archive_Name=$archiveName" >> "$GITHUB_ENV"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dave-cli-${{ matrix.configuration }}-${{ env.Version_Number }}-${{ env.Runtime_Identifier }}
+        path: artifacts/${{ env.Archive_Name }}
+
+    - name: Add to GitHub Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.configuration == 'Release'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.Version_Number }}
+        name: DAVE ${{ env.Version_Number }}
+        files: artifacts/${{ env.Archive_Name }}

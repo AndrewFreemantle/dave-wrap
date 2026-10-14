@@ -30,8 +30,10 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
-        <PackageReference Include="ExcelDataReader" Version="3.9.0" />
-        <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DAVE.Core\DAVE.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
