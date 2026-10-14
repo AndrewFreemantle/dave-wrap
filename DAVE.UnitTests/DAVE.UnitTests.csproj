@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DAVE.Cli\DAVE.Cli.csproj" />
+      <ProjectReference Include="..\DAVE.Core\DAVE.Core.csproj" />
       <ProjectReference Include="..\DAVE.UI\DAVE.UI.csproj" />
     </ItemGroup>
 
