@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="DAVE.Cli/DAVE.Cli.csproj" />
+  <Project Path="DAVE.Core/DAVE.Core.csproj" />
   <Project Path="DAVE.UI/DAVE.UI.csproj" />
   <Project Path="DAVE.UnitTests/DAVE.UnitTests.csproj" />
 </Solution>
