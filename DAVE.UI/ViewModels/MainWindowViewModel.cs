@@ -73,7 +73,7 @@ public partial class MainWindowViewModel(IResultsWindowService resultsWindowServ
             Console.WriteLine(@"MVVM: HandleFile - checking file");
             _filesDropped = true;
 
-            var sheet = new DataCaptureSpreadsheet(file);
+            var sheet = file.ToDataCaptureSpreadsheet();
             if (sheet.IsValid)
                 if (sheet.IsCurrent)
                     CurrentSheet = sheet;

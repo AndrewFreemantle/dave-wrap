@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <AssemblyName>DAVE.Core</AssemblyName>
+        <RootNamespace>DAVE</RootNamespace>
+        <Title>Data Assurance + Verification Engine - Checks</Title>
+        <Authors>WRAP, Rentbook Ltd, Andrew Freemantle</Authors>
+        <Copyright>WRAP, 2026</Copyright>
+        <Company>WRAP</Company>
+        <Product>Data Assurance + Verification Engine</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+        <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+    </ItemGroup>
+</Project>
